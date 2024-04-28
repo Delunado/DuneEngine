@@ -163,6 +163,8 @@
     <ClCompile Include="src\math\Vec2.cpp" />
     <ClCompile Include="src\physics\Force.cpp" />
     <ClCompile Include="src\physics\Particle.cpp" />
+    <ClCompile Include="src\render\DURenderer.cpp" />
+    <ClCompile Include="src\render\DUShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
@@ -170,6 +172,8 @@
     <ClInclude Include="src\math\Vec2.h" />
     <ClInclude Include="src\physics\Force.h" />
     <ClInclude Include="src\physics\Particle.h" />
+    <ClInclude Include="src\render\DURenderer.h" />
+    <ClInclude Include="src\render\DUShader.h" />
     <ClInclude Include="src\utils\Timer.h" />
   </ItemGroup>
   <ItemGroup>

@@ -7,15 +7,8 @@
 #include "math/Vec2.h"
 #include "physics/Force.h"
 #include "physics/Particle.h"
-
-#define PLATFORM_DESKTOP
-
-#if defined(PLATFORM_DESKTOP)
-#define GLSL_VERSION            330
-#else   // PLATFORM_ANDROID, PLATFORM_WEB
-    #define GLSL_VERSION            100
-#endif
-
+#include "render/DURenderer.h"
+#include "render/DUShader.h"
 
 struct Particle;
 
@@ -41,12 +34,9 @@ void Application::Setup()
 
     _bgColor = {45, 45, 45, 255};
 
-    _scanlinesShader = LoadShader(0, TextFormat("./shaders/scanlines.glsl", GLSL_VERSION));
-
-    SetShaderValue(_scanlinesShader, GetShaderLocation(_scanlinesShader, "renderWidth"), &WINDOW_WIDTH,
-                   SHADER_UNIFORM_FLOAT);
-    SetShaderValue(_scanlinesShader, GetShaderLocation(_scanlinesShader, "renderHeight"), &WINDOW_HEIGHT,
-                   SHADER_UNIFORM_FLOAT);
+    _scanlinesShader = DUShader(nullptr, "./shaders/scanlines.glsl");
+    _scanlinesShader.SetFloat("renderWidth", WINDOW_WIDTH);
+    _scanlinesShader.SetFloat("renderHeight", WINDOW_HEIGHT);
 
     _renderTarget = LoadRenderTexture(WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -168,6 +158,9 @@ void Application::FixedUpdate()
 
 void Application::Render()
 {
+    const float time = GetTime();
+    _scanlinesShader.SetFloat("time", time);
+
     BeginTextureMode(_renderTarget);
     ClearBackground(_bgColor);
 
@@ -183,12 +176,24 @@ void Application::Render()
 
         DrawCircle(_particles[i]->position.x, _particles[i]->position.y, _particles[i]->radius, color);
     }
-
     EndTextureMode();
 
+
     BeginDrawing();
-    ShaderRendering(_renderTarget, _scanlinesShader);
+
+    DURenderer::BeginShaderMode(_scanlinesShader);
+
+    const Rectangle sourceRec = {
+        0.0f, 0.0f, static_cast<float>(_renderTarget.texture.width), static_cast<float>(-_renderTarget.texture.height)
+    };
+
+    constexpr Vector2 origin = {0.0f, 0.0f};
+
+    DrawTextureRec(_renderTarget.texture, sourceRec, origin, WHITE);
+    DURenderer::EndShaderMode();
+
     DrawFPS(10, 10);
+
     EndDrawing();
 }
 
@@ -200,19 +205,4 @@ void Application::Cleanup() const
     }
 
     CloseWindow();
-}
-
-// Specific app functions
-void Application::ShaderRendering(const RenderTexture2D& target, const Shader& shader)
-{
-    BeginShaderMode(shader);
-    const float time = GetTime();
-    SetShaderValue(shader, GetShaderLocation(shader, "time"), &time, SHADER_UNIFORM_FLOAT);
-
-    const Rectangle sourceRec = {
-        0.0f, 0.0f, static_cast<float>(target.texture.width), static_cast<float>(-target.texture.height)
-    };
-    constexpr Vector2 origin = {0.0f, 0.0f};
-    DrawTextureRec(target.texture, sourceRec, origin, WHITE);
-    EndShaderMode();
 }

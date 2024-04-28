@@ -3,6 +3,9 @@
 #include <vector>
 
 #include "math/Vec2.h"
+#include "render/DUShader.h"
+
+using namespace Dune::Renderer;
 
 struct Particle;
 
@@ -32,7 +35,7 @@ private:
 
     // Specific app variables
     Color _bgColor;
-    Shader _scanlinesShader;
+    DUShader _scanlinesShader;
     RenderTexture2D _renderTarget;
 
     float _stepAccumulator;

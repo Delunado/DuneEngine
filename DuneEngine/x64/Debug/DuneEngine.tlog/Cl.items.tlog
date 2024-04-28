@@ -3,3 +3,5 @@ D:\GameDev\C++\DuneEngine\DuneEngine\src\Main.cpp;D:\GameDev\C++\DuneEngine\Dune
 D:\GameDev\C++\DuneEngine\DuneEngine\src\math\Vec2.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\Vec2.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\Force.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\Force.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\Particle.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\Particle.obj
+D:\GameDev\C++\DuneEngine\DuneEngine\src\render\DURenderer.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\DURenderer.obj
+D:\GameDev\C++\DuneEngine\DuneEngine\src\render\DUShader.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\DUShader.obj
