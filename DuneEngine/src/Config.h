@@ -9,4 +9,9 @@ inline float fixedDeltaTime = 1.0f / static_cast<float>(FIXED_FPS);
 
 constexpr int PIXELS_PER_METER = 100;
 
-inline float MIN_VELOCITY = 0.1f * PIXELS_PER_METER;
+// PHYSICS
+inline float MIN_VELOCITY = 0.01f * PIXELS_PER_METER;
+inline float MAX_VELOCITY = 10.0f * PIXELS_PER_METER;
+
+inline float MIN_GRAVITATIONAL_DISTANCE = 3.0f;
+inline float MAX_GRAVITATIONAL_DISTANCE = 150.0f;

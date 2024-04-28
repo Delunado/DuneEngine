@@ -51,8 +51,8 @@ void Application::Setup()
     _renderTarget = LoadRenderTexture(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 
-    Particle* particle1 = new Particle(Vec2(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 4.0f), 2.5f);
-    particle1->radius = 8;
+    Particle* particle1 = new Particle(Vec2(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 4.0f), 1.0f);
+    particle1->radius = 5;
 
     _particles.push_back(particle1);
 
@@ -85,8 +85,8 @@ void Application::Input()
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
     {
-        Particle* particle = new Particle(Vec2(GetMousePosition().x, GetMousePosition().y), 5.15f);
-        particle->radius = 6;
+        Particle* particle = new Particle(Vec2(GetMousePosition().x, GetMousePosition().y), GetRandomValue(15, 35));
+        particle->radius = particle->mass / 1.5f;
         _particles.push_back(particle);
     }
 
@@ -120,11 +120,19 @@ void Application::FixedUpdate()
 {
     while (_stepAccumulator >= fixedDeltaTime)
     {
+        _particles[0]->AddForce(_keyboardForce);
+
+        // Compute gravitational forces for particles[0] with all other particles
+        for (size_t i = 1; i < _particles.size(); i++)
+        {
+            Vec2 gravitationalForce = Force::GenerateGravitationalForce(*_particles[0], *_particles[i],
+                                                                        50.0f * PIXELS_PER_METER);
+            _particles[0]->AddForce(gravitationalForce);
+        }
+
         for (Particle* particle : _particles)
         {
-            particle->AddForce(_keyboardForce);
-
-            Vec2 frictionForce = Force::GenerateFrictionForce(*particle, 10.0f * PIXELS_PER_METER);
+            Vec2 frictionForce = Force::GenerateFrictionForce(*particle, 1.0f * PIXELS_PER_METER);
             particle->AddForce(frictionForce);
 
             particle->Integrate(fixedDeltaTime);
@@ -169,11 +177,11 @@ void Application::Render()
                  RED);
     }
 
-    for (const Particle* particle : _particles)
+    for (int i = 0; i < _particles.size(); i++)
     {
-        Color color = GREEN;
+        Color color = i == 0 ? GREEN : RED;
 
-        DrawCircle(particle->position.x, particle->position.y, particle->radius, color);
+        DrawCircle(_particles[i]->position.x, _particles[i]->position.y, _particles[i]->radius, color);
     }
 
     EndTextureMode();
