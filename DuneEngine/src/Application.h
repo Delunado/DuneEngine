@@ -18,7 +18,7 @@ public:
     bool IsRunning() const;
 
     void Setup();
-    
+
     void Input();
     void Update();
     void FixedUpdate();
@@ -29,9 +29,6 @@ public:
 private:
     // General app variables
     bool _running;
-
-    // Specific app functions
-    void ShaderRendering(const RenderTexture2D& target, const Shader& shader);
 
     // Specific app variables
     Color _bgColor;
@@ -44,4 +41,9 @@ private:
     std::vector<Particle*> _particles;
 
     Vec2 _keyboardForce;
+
+    Vec2 _anchor;
+    Vec2 _anchor2;
+    float _springConstant;
+    float _restLength;
 };
