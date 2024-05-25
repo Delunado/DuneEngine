@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include "../Config.h"
+#include "rigidbodies/Body.h"
 
 Vec2 Force::GenerateDragForce(const Particle& particle, float dragCoefficient)
 {
@@ -12,6 +13,24 @@ Vec2 Force::GenerateDragForce(const Particle& particle, float dragCoefficient)
     if (velocityMagnitudeSquared > 0)
     {
         const Vec2 dragDirection = particle.velocity.UnitVector() * -1.0f;
+
+        const float dragMagnitude = dragCoefficient * velocityMagnitudeSquared;
+
+        dragForce = dragDirection * dragMagnitude;
+    }
+
+    return dragForce;
+}
+
+Vec2 Force::GenerateDragForce(const Body& body, float dragCoefficient)
+{
+    Vec2 dragForce = Vec2(0, 0);
+
+    const float velocityMagnitudeSquared = body.velocity.MagnitudeSquared();
+
+    if (velocityMagnitudeSquared > 0)
+    {
+        const Vec2 dragDirection = body.velocity.UnitVector() * -1.0f;
 
         const float dragMagnitude = dragCoefficient * velocityMagnitudeSquared;
 

@@ -5,6 +5,7 @@
 #include "math/Vec2.h"
 #include "render/DUShader.h"
 
+class BaseProject;
 using namespace Dune::Renderer;
 
 struct Particle;
@@ -30,20 +31,11 @@ private:
     // General app variables
     bool _running;
 
-    // Specific app variables
+    BaseProject* _currentProject;
+
     Color _bgColor;
     DUShader _scanlinesShader;
     RenderTexture2D _renderTarget;
 
     float _stepAccumulator;
-
-    Vec2 _currentMousePosition;
-    std::vector<Particle*> _particles;
-
-    Vec2 _keyboardForce;
-
-    Vec2 _anchor;
-    Vec2 _anchor2;
-    float _springConstant;
-    float _restLength;
 };
