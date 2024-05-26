@@ -13,16 +13,31 @@ public:
     void AddForce(const Vec2& force);
     void ClearForces();
 
-    void Integrate(float dt);
+    void AddTorque(float torque);
+    void ClearTorque();
+
+    void IntegrateLinear(float dt);
+    void IntegrateAngular(float dt);
 
     Shape* shape = nullptr;
 
+    // Mass and Inertia
+    float mass;
+    float inverseMass;
+    float momentOfInertia;
+    float inverseMomentOfInertia;
+
+    // Linear motion
     Vec2 position;
     Vec2 velocity;
     Vec2 acceleration;
 
-    Vec2 netForce;
+    // Angular motion
+    float rotation;
+    float angularVelocity;
+    float angularAcceleration;
 
-    float mass;
-    float inverseMass;
+    // Forces
+    Vec2 netForce;
+    float netTorque;
 };

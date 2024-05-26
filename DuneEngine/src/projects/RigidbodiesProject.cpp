@@ -1,5 +1,6 @@
 ﻿#include "RigidbodiesProject.h"
 
+#include <iostream>
 #include <raylib.h>
 
 #include "../physics/rigidbodies/Body.h"
@@ -14,7 +15,7 @@ RigidbodiesProject::RigidbodiesProject()
 
 void RigidbodiesProject::Setup()
 {
-    Body* body = new Body(CircleShape(20.0f), Vec2(400.0f, 300.0f), 15.0f);
+    Body* body = new Body(CircleShape(40.0f), Vec2(400.0f, 300.0f), 5.0f);
     _bodies.push_back(body);
 }
 
@@ -36,7 +37,11 @@ void RigidbodiesProject::FixedUpdate()
         Vec2 weightForce = Vec2(0, 9.8f * PIXELS_PER_METER) * body->mass;
         body->AddForce(weightForce);
 
-        body->Integrate(fixedDeltaTime);
+        float torque = 15.0f * PIXELS_PER_METER;
+        body->AddTorque(torque);
+
+        body->IntegrateLinear(fixedDeltaTime);
+        body->IntegrateAngular(fixedDeltaTime);
 
         // Limits screen collision
         if (body->shape->GetType() == CIRCLE)
@@ -46,24 +51,24 @@ void RigidbodiesProject::FixedUpdate()
             if (body->position.y + circle->radius > WINDOW_HEIGHT)
             {
                 body->position.y = WINDOW_HEIGHT - circle->radius;
-                body->velocity.y *= -0.99f;
+                body->velocity.y *= -0.9f;
             }
             else if (body->position.y - circle->radius <= 0.0f)
             {
                 body->position.y = circle->radius;
-                body->velocity.y *= -0.99f;
+                body->velocity.y *= -0.9f;
             }
 
             if (body->position.x + circle->radius > WINDOW_WIDTH)
             {
                 body->position.x = WINDOW_WIDTH - circle->radius;
-                body->velocity.x *= -0.99f;
+                body->velocity.x *= -0.9f;
             }
             else if (body->position.x - circle->radius <
                 0.0f)
             {
                 body->position.x = circle->radius;
-                body->velocity.x *= -0.99f;
+                body->velocity.x *= -0.9f;
             }
         }
     }
@@ -71,14 +76,12 @@ void RigidbodiesProject::FixedUpdate()
 
 void RigidbodiesProject::Render()
 {
-    static float angle = 0.0f;
-
     for (Body*& body : _bodies)
     {
         if (body->shape->GetType() == CIRCLE)
         {
             CircleShape* circle = dynamic_cast<CircleShape*>(body->shape);
-            DUDraw::DrawCircleLinesAngle(body->position.x, body->position.y, circle->radius, angle, RED);
+            DUDraw::DrawCircleLinesAngle(body->position.x, body->position.y, circle->radius, body->rotation, RED);
         }
         else
         {

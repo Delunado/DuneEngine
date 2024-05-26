@@ -19,7 +19,7 @@ ShapeType BoxShape::GetType() const
 
 float BoxShape::GetMomentOfInertia() const
 {
-    return 0.0f;
+    return (width * width + height * height) * 0.0833f; // 0.0833f is 1/12
 }
 
 BoxShape* BoxShape::Clone() const

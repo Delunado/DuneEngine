@@ -19,7 +19,7 @@ ShapeType CircleShape::GetType() const
 
 float CircleShape::GetMomentOfInertia() const
 {
-    return 0.0f;
+    return radius * radius * 0.5f;
 }
 
 CircleShape* CircleShape::Clone() const

@@ -13,6 +13,13 @@ Body::Body(const Shape& shape, const Vec2& position, float mass)
 
     this->position = position;
     this->mass = mass;
+    this->velocity = Vec2(0.0f, 0.0f);
+    this->acceleration = Vec2(0.0f, 0.0f);
+    this->rotation = 0.0f;
+    this->angularVelocity = 0.0f;
+    this->angularAcceleration = 0.0f;
+    this->netForce = Vec2(0.0f, 0.0f);
+    this->netTorque = 0.0f;
 
     if (mass != 0.0f)
     {
@@ -22,20 +29,30 @@ Body::Body(const Shape& shape, const Vec2& position, float mass)
     {
         this->inverseMass = 0.0f;
     }
+
+    this->momentOfInertia = this->shape->GetMomentOfInertia() * mass;
+
+    if (momentOfInertia != 0.0f)
+    {
+        this->inverseMomentOfInertia = 1.0f / momentOfInertia;
+    }
+    else
+    {
+        this->inverseMomentOfInertia = 0.0f;
+    }
 }
 
 Body::~Body()
 {
     delete shape;
-    
+
     std::cout << "Body destroyed" << std::endl;
 }
 
-void Body::Integrate(float dt)
+void Body::IntegrateLinear(float dt)
 {
     acceleration = netForce * inverseMass;
 
-    // Calculate & Clamp velocity
     velocity += acceleration * dt;
 
     if (velocity.MagnitudeSquared() <= MIN_VELOCITY * MIN_VELOCITY)
@@ -51,8 +68,18 @@ void Body::Integrate(float dt)
 
     position += velocity * dt;
 
-    netForce.x = 0.0f;
-    netForce.y = 0.0f;
+    ClearForces();
+}
+
+void Body::IntegrateAngular(float dt)
+{
+    angularAcceleration = netTorque * inverseMomentOfInertia;
+
+    angularVelocity += angularAcceleration * dt;
+
+    rotation += angularVelocity * dt;
+
+    ClearTorque();
 }
 
 void Body::AddForce(const Vec2& force)
@@ -62,4 +89,16 @@ void Body::AddForce(const Vec2& force)
 
 void Body::ClearForces()
 {
+    netForce.x = 0.0f;
+    netForce.y = 0.0f;
+}
+
+void Body::AddTorque(float torque)
+{
+    netTorque += torque;
+}
+
+void Body::ClearTorque()
+{
+    netTorque = 0.0f;
 }
