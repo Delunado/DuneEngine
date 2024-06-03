@@ -1,7 +1,8 @@
 ﻿#pragma once
+#include "PolygonShape.h"
 #include "Shape.h"
 
-struct BoxShape : public Shape
+struct BoxShape : public PolygonShape
 {
 public:
     BoxShape(const float width, const float height);
