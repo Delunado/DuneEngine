@@ -6,6 +6,7 @@
 #include "../../Config.h"
 
 #include "./shapes/Shape.h"
+#include "shapes/PolygonShape.h"
 
 Body::Body(const Shape& shape, const Vec2& position, float mass)
 {
@@ -101,4 +102,16 @@ void Body::AddTorque(float torque)
 void Body::ClearTorque()
 {
     netTorque = 0.0f;
+}
+
+void Body::Update(const float dt)
+{
+    IntegrateLinear(dt);
+    IntegrateAngular(dt);
+
+    if (shape->GetType() == BOX || shape->GetType() == POLYGON)
+    {
+        PolygonShape* polygon = dynamic_cast<PolygonShape*>(shape);
+        polygon->UpdateVertices(position, rotation);
+    }
 }

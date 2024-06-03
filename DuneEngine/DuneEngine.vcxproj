@@ -316,6 +316,8 @@
       <AdditionalIncludeDirectories>D:\GameDev\C++\DuneEngine\DuneEngine\\include</AdditionalIncludeDirectories>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
+    <ClCompile Include="src\physics\rigidbodies\CollisionDetection.cpp" />
+    <ClCompile Include="src\physics\rigidbodies\ContactInfo.cpp" />
     <ClCompile Include="src\physics\rigidbodies\shapes\BoxShape.cpp">
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -630,6 +632,8 @@
     <ClInclude Include="src\physics\Force.h" />
     <ClInclude Include="src\physics\particles\Particle.h" />
     <ClInclude Include="src\physics\rigidbodies\Body.h" />
+    <ClInclude Include="src\physics\rigidbodies\CollisionDetection.h" />
+    <ClInclude Include="src\physics\rigidbodies\ContactInfo.h" />
     <ClInclude Include="src\physics\rigidbodies\shapes\BoxShape.h" />
     <ClInclude Include="src\physics\rigidbodies\shapes\CircleShape.h" />
     <ClInclude Include="src\physics\rigidbodies\shapes\PolygonShape.h" />

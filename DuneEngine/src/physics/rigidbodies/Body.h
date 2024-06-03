@@ -16,8 +16,7 @@ public:
     void AddTorque(float torque);
     void ClearTorque();
 
-    void IntegrateLinear(float dt);
-    void IntegrateAngular(float dt);
+    void Update(float dt);
 
     Shape* shape = nullptr;
 
@@ -40,4 +39,11 @@ public:
     // Forces
     Vec2 netForce;
     float netTorque;
+
+    // Collision
+    bool isColliding = false;
+    
+private:
+    void IntegrateLinear(float dt);
+    void IntegrateAngular(float dt);
 };
