@@ -11,6 +11,9 @@ struct Body;
 class ContactInfo
 {
 public:
+    ContactInfo();
+    ~ContactInfo();
+
     Body* bodyA;
     Body* bodyB;
 

@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "BaseProject.h"
+#include "../physics/rigidbodies/ContactInfo.h"
 
 struct Body;
 
@@ -19,4 +20,6 @@ public:
 
 private:
     std::vector<Body*> _bodies;
+    ContactInfo _contactInfo;
+    bool _isCollision;
 };

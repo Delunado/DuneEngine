@@ -5,6 +5,8 @@ D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\Force.cpp;D:\GameDev\C++\DuneEn
 D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\particles\Particle.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\Particle.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\rigidbodies\Body.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\Body.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\rigidbodies\CollisionDetection.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\CollisionDetection.obj
+D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\rigidbodies\CollisionResolution.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\CollisionResolution.obj
+D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\rigidbodies\ContactInfo.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\ContactInfo.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\rigidbodies\shapes\BoxShape.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\BoxShape.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\rigidbodies\shapes\CircleShape.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\CircleShape.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\rigidbodies\shapes\PolygonShape.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\PolygonShape.obj
