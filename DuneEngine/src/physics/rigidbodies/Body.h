@@ -16,7 +16,11 @@ public:
     void AddTorque(float torque);
     void ClearTorque();
 
+    void ApplyImpulse(const Vec2& impulse);
+
     void Update(float dt);
+
+    bool IsStatic() const;
 
     Shape* shape = nullptr;
 
@@ -41,8 +45,9 @@ public:
     float netTorque;
 
     // Collision
-    bool isColliding = false;
-    
+    float restitution;
+    bool isColliding;
+
 private:
     void IntegrateLinear(float dt);
     void IntegrateAngular(float dt);

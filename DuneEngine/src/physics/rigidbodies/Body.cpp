@@ -21,6 +21,8 @@ Body::Body(const Shape& shape, const Vec2& position, float mass)
     this->angularAcceleration = 0.0f;
     this->netForce = Vec2(0.0f, 0.0f);
     this->netTorque = 0.0f;
+    this->restitution = 1.0f;
+    this->isColliding = false;
 
     if (mass != 0.0f)
     {
@@ -52,6 +54,8 @@ Body::~Body()
 
 void Body::IntegrateLinear(float dt)
 {
+    if (IsStatic()) return;
+
     acceleration = netForce * inverseMass;
 
     velocity += acceleration * dt;
@@ -74,6 +78,8 @@ void Body::IntegrateLinear(float dt)
 
 void Body::IntegrateAngular(float dt)
 {
+    if (IsStatic()) return;
+
     angularAcceleration = netTorque * inverseMomentOfInertia;
 
     angularVelocity += angularAcceleration * dt;
@@ -104,6 +110,13 @@ void Body::ClearTorque()
     netTorque = 0.0f;
 }
 
+void Body::ApplyImpulse(const Vec2& impulse)
+{
+    if (IsStatic()) return;
+
+    velocity += impulse * inverseMass;
+}
+
 void Body::Update(const float dt)
 {
     IntegrateLinear(dt);
@@ -114,4 +127,10 @@ void Body::Update(const float dt)
         PolygonShape* polygon = dynamic_cast<PolygonShape*>(shape);
         polygon->UpdateVertices(position, rotation);
     }
+}
+
+bool Body::IsStatic() const
+{
+    const float epsilon = 0.0001f;
+    return fabs(inverseMass - 0.0f) < epsilon;
 }

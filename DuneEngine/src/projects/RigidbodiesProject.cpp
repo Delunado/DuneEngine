@@ -19,17 +19,26 @@ RigidbodiesProject::RigidbodiesProject()
 
 void RigidbodiesProject::Setup()
 {
-    Body* circle1 = new Body(CircleShape(100.0f), Vec2(400.0f, 300.0f), 2.0f * 10.0f);
+    Body* circle5 = new Body(CircleShape(120.0f), Vec2(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT - 130), 0);
+    _bodies.push_back(circle5);
+    circle5->restitution = 1.0f;
+
+    /*Body* circle1 = new Body(CircleShape(20.0f), Vec2(100.0f, 100.0f), 2.0f * 2.0f);
     _bodies.push_back(circle1);
 
-    Body* circle2 = new Body(CircleShape(60.0f), Vec2(500.0f, 300.0f), 2.0f * 6.0f);
+    Body* circle2 = new Body(CircleShape(20.0f), Vec2(200.0f, 100.0f), 2.0f * 2.0f);
     _bodies.push_back(circle2);
 
-    Body* circle3 = new Body(CircleShape(80.0f), Vec2(600.0f, 300.0f), 2.0f * 8.0f);
+    Body* circle3 = new Body(CircleShape(20.0f), Vec2(300.0f, 100.0f), 2.0f * 2.0f);
     _bodies.push_back(circle3);
 
-    Body* circle4 = new Body(CircleShape(40.0f), Vec2(700.0f, 300.0f), 2.0f * 4.0f);
+    Body* circle4 = new Body(CircleShape(60.0f), Vec2(150.0f, 300.0f), 0);
     _bodies.push_back(circle4);
+    circle4->restitution = 1.0f;
+
+    Body* circle5 = new Body(CircleShape(60.0f), Vec2(350.0f, 300.0f), 0);
+    _bodies.push_back(circle5);
+    circle5->restitution = 1.0f;*/
 
     /*Body* box = new Body(BoxShape(100.0f, 50.0f), Vec2(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f), 5.0f);
     _bodies.push_back(box);
@@ -42,7 +51,23 @@ void RigidbodiesProject::Setup()
 void RigidbodiesProject::Input()
 {
     Vector2 mousePosition = GetMousePosition();
-    _bodies[0]->position = Vec2(mousePosition.x, mousePosition.y);
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    {
+        float mass = GetRandomValue(10.0f, 40.0f);
+        Body* circle = new Body(CircleShape(mass), Vec2(mousePosition.x, mousePosition.y), mass);
+        _bodies.push_back(circle);
+    }
+
+    //IF space is pressed, apply random impulse to bodies
+    if (IsKeyPressed(KEY_SPACE))
+    {
+        for (int i = 0; i < _bodies.size(); i++)
+        {
+            Vec2 impulse = Vec2(GetRandomValue(-800.0f * PIXELS_PER_METER, 800.0f * PIXELS_PER_METER),
+                                GetRandomValue(-800.0f * PIXELS_PER_METER, 800.0f * PIXELS_PER_METER));
+            _bodies[i]->ApplyImpulse(impulse * _bodies[i]->mass);
+        }
+    }
 }
 
 void RigidbodiesProject::Update()
@@ -53,14 +78,14 @@ void RigidbodiesProject::FixedUpdate()
 {
     for (Body* body : _bodies)
     {
-        //Vec2 dragForce = Force::GenerateDragForce(*body, 0.005f);
-        //body->AddForce(dragForce);
+        Vec2 dragForce = Force::GenerateDragForce(*body, 0.015f);
+        body->AddForce(dragForce);
 
-        //Vec2 weightForce = Vec2(0, 9.8f * PIXELS_PER_METER) * body->mass;
-        //body->AddForce(weightForce);
+        Vec2 weightForce = Vec2(0, 15.0f * PIXELS_PER_METER) * body->mass;
+        body->AddForce(weightForce);
 
-        //Vec2 windForce = Vec2(100.0f * PIXELS_PER_METER, 10.0f * PIXELS_PER_METER);
-        //body->AddForce(windForce);
+        /*Vec2 windForce = Vec2(3.0f * PIXELS_PER_METER, 10.0f * PIXELS_PER_METER);
+        body->AddForce(windForce);*/
 
         /*float torque = 15.0f * PIXELS_PER_METER;
         body->AddTorque(torque);*/
@@ -83,11 +108,12 @@ void RigidbodiesProject::FixedUpdate()
 
             if (CollisionDetection::IsColliding(body, otherBody, contactInfo))
             {
+                CollisionResolution::ResolveCollision(contactInfo);
+
                 _contactInfo = contactInfo;
                 _isCollision = true;
                 body->isColliding = true;
                 otherBody->isColliding = true;
-                CollisionResolution::ResolvePenetration(contactInfo);
             }
         }
     }
@@ -133,7 +159,7 @@ void RigidbodiesProject::Render()
 {
     for (Body*& body : _bodies)
     {
-        Color color = body->isColliding ? RED : GREEN;
+        Color color = body == _bodies[0] ? WHITE : GREEN;
 
         if (body->shape->GetType() == CIRCLE)
         {
@@ -146,13 +172,6 @@ void RigidbodiesProject::Render()
             DUDraw::DrawPolygon(body->position, polygon->worldVertices, color);
         }
     }
-
-    if (!_isCollision) return;
-
-    DrawCircle(_contactInfo.start.x, _contactInfo.start.y, 2.0f, YELLOW);
-    DrawCircle(_contactInfo.end.x, _contactInfo.end.y, 2.0f, GREEN);
-    DrawLine(_contactInfo.start.x, _contactInfo.start.y, _contactInfo.start.x + _contactInfo.normal.x * 20.0f,
-             _contactInfo.start.y + _contactInfo.normal.y * 20.0f, GREEN);
 }
 
 void RigidbodiesProject::Cleanup()

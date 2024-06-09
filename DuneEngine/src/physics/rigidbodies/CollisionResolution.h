@@ -5,4 +5,5 @@ struct CollisionResolution
 {
 public:
     static void ResolvePenetration(ContactInfo& contactInfo);
+    static void ResolveCollision(ContactInfo& contactInfo);
 };
