@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Config.h"
+#include "projects/BouncyBallsProject.h"
 #include "projects/RigidbodiesProject.h"
 #include "render/DURenderer.h"
 #include "render/DUShader.h"
@@ -92,8 +93,9 @@ void Application::Render()
     constexpr Vector2 origin = {0.0f, 0.0f};
 
     DrawTextureRec(_renderTarget.texture, sourceRec, origin, WHITE);
+    
     DURenderer::EndShaderMode();
-
+    
     DrawFPS(10, 10);
 
     EndDrawing();

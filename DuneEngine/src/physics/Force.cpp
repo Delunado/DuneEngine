@@ -12,7 +12,7 @@ Vec2 Force::GenerateDragForce(const Particle& particle, float dragCoefficient)
 
     if (velocityMagnitudeSquared > 0)
     {
-        const Vec2 dragDirection = particle.velocity.UnitVector() * -1.0f;
+        const Vec2 dragDirection = particle.velocity.Normal() * -1.0f;
 
         const float dragMagnitude = dragCoefficient * velocityMagnitudeSquared;
 
@@ -30,7 +30,7 @@ Vec2 Force::GenerateDragForce(const Body& body, float dragCoefficient)
 
     if (velocityMagnitudeSquared > 0)
     {
-        const Vec2 dragDirection = body.velocity.UnitVector() * -1.0f;
+        const Vec2 dragDirection = body.velocity.Normal() * -1.0f;
 
         const float dragMagnitude = dragCoefficient * velocityMagnitudeSquared;
 
@@ -42,7 +42,7 @@ Vec2 Force::GenerateDragForce(const Body& body, float dragCoefficient)
 
 Vec2 Force::GenerateFrictionForce(const Particle& particle, float frictionCoefficient)
 {
-    const Vec2 frictionDirection = particle.velocity.UnitVector() * -1.0f;
+    const Vec2 frictionDirection = particle.velocity.Normal() * -1.0f;
 
     const float frictionMagnitude = frictionCoefficient * particle.mass;
 
@@ -55,7 +55,7 @@ Vec2 Force::GenerateGravitationalForce(const Particle& particleA, const Particle
                                        float gravitationalConstant)
 {
     const Vec2 direction = particleB.position - particleA.position;
-    const Vec2 attractionDirection = direction.UnitVector();
+    const Vec2 attractionDirection = direction.Normal();
 
     float distanceSquared = direction.MagnitudeSquared();
     // We clamp the distance to make it more interesting
@@ -74,7 +74,7 @@ Vec2 Force::GenerateSpringForce(const Particle& particle, Vec2 anchor, float res
 
     const float displacement = direction.Magnitude() - restLength;
 
-    const Vec2 springDirection = direction.UnitVector();
+    const Vec2 springDirection = direction.Normal();
     const float springMagnitude = -springConstant * displacement;
 
     Vec2 springForce = springDirection * springMagnitude;

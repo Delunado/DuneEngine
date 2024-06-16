@@ -14,6 +14,8 @@ public:
     ShapeType GetType() const override;
     float GetMomentOfInertia() const override;
 
+    Vec2 EdgeAt(int index) const;
+
     /**
      * @brief Updates the vertices of the shape from local space to world space.
      * 
@@ -21,6 +23,7 @@ public:
      * @param rotation The rotation of the body.
      */
     void UpdateVertices(const Vec2& position, float rotation);
+    float FindMinSeparation(const PolygonShape& other, Vec2& axis, Vec2& point) const;
 
     PolygonShape* Clone() const override;
 

@@ -8,7 +8,6 @@
 #include "../Config.h"
 #include "../physics/Force.h"
 #include "../physics/rigidbodies/CollisionDetection.h"
-#include "../physics/rigidbodies/CollisionResolution.h"
 #include "../physics/rigidbodies/ContactInfo.h"
 #include "../physics/rigidbodies/shapes/BoxShape.h"
 #include "../render/DUDraw.h"
@@ -19,44 +18,52 @@ RigidbodiesProject::RigidbodiesProject()
 
 void RigidbodiesProject::Setup()
 {
-    Body* circle5 = new Body(CircleShape(120.0f), Vec2(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT - 130), 0);
-    _bodies.push_back(circle5);
-    circle5->restitution = 1.0f;
+    float centerX = WINDOW_WIDTH / 2.0f;
+    float centerY = WINDOW_HEIGHT / 2.0f;
 
-    /*Body* circle1 = new Body(CircleShape(20.0f), Vec2(100.0f, 100.0f), 2.0f * 2.0f);
-    _bodies.push_back(circle1);
+    // Box A
+    Body* boxA = new Body(BoxShape(50.0f, 50.0f), Vec2(centerX - 300.0f, centerY - 200.0f), 5.0f);
+    _bodies.push_back(boxA);
+    boxA->angularVelocity = 0.0f;
 
-    Body* circle2 = new Body(CircleShape(20.0f), Vec2(200.0f, 100.0f), 2.0f * 2.0f);
-    _bodies.push_back(circle2);
+    // Box B
+    Body* boxB = new Body(BoxShape(200.0f, 100.0f), Vec2(centerX + 300.0f, centerY - 200.0f), 5.0f);
+    _bodies.push_back(boxB);
+    boxB->angularVelocity = 0.1f;
 
-    Body* circle3 = new Body(CircleShape(20.0f), Vec2(300.0f, 100.0f), 2.0f * 2.0f);
-    _bodies.push_back(circle3);
+    // Box C
+    Body* boxC = new Body(BoxShape(150.0f, 80.0f), Vec2(centerX - 300.0f, centerY + 200.0f), 5.0f);
+    _bodies.push_back(boxC);
+    boxC->angularVelocity = 5.0f;
 
-    Body* circle4 = new Body(CircleShape(60.0f), Vec2(150.0f, 300.0f), 0);
-    _bodies.push_back(circle4);
-    circle4->restitution = 1.0f;
+    // Define the height of the equilateral triangle based on side length
+    float sideLength = 100.0f;
+    float height = (sqrt(3.0f) / 2.0f) * sideLength;
 
-    Body* circle5 = new Body(CircleShape(60.0f), Vec2(350.0f, 300.0f), 0);
-    _bodies.push_back(circle5);
-    circle5->restitution = 1.0f;*/
+    // Equilateral Triangle
+    Body* triangle = new Body(PolygonShape({
+        Vec2(-sideLength / 2.0f, -height / 3.0f),  // Bottom left vertex
+        Vec2(sideLength / 2.0f, -height / 3.0f),   // Bottom right vertex
+        Vec2(0.0f, 2.0f * height / 3.0f)           // Top vertex
+    }), Vec2(centerX + 300.0f, centerY + 200.0f), 5.0f);
+    _bodies.push_back(triangle);
+    triangle->angularVelocity = 1.0f;
 
-    /*Body* box = new Body(BoxShape(100.0f, 50.0f), Vec2(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f), 5.0f);
-    _bodies.push_back(box);
-
-    Body* triangle = new Body(PolygonShape({Vec2(0.0f, -50.0f), Vec2(50.0f, 50.0f), Vec2(-50.0f, 50.0f)}),
-                              Vec2(600.0f, 300.0f), 5.0f);
-    _bodies.push_back(triangle);*/
+    // Pentagon
+    Body* pentagon = new Body(PolygonShape({
+        Vec2(0.0f, -50.0f), Vec2(47.6f, -15.5f), Vec2(29.4f, 40.4f),
+        Vec2(-29.4f, 40.4f), Vec2(-47.6f, -15.5f)
+    }), Vec2(centerX, centerY), 5.0f);
+    _bodies.push_back(pentagon);
+    pentagon->angularVelocity = 0.5f;
 }
 
 void RigidbodiesProject::Input()
 {
     Vector2 mousePosition = GetMousePosition();
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-    {
-        float mass = GetRandomValue(10.0f, 40.0f);
-        Body* circle = new Body(CircleShape(mass), Vec2(mousePosition.x, mousePosition.y), mass);
-        _bodies.push_back(circle);
-    }
+
+    _bodies[0]->position.x = mousePosition.x;
+    _bodies[0]->position.y = mousePosition.y;
 
     //IF space is pressed, apply random impulse to bodies
     if (IsKeyPressed(KEY_SPACE))
@@ -81,15 +88,6 @@ void RigidbodiesProject::FixedUpdate()
         Vec2 dragForce = Force::GenerateDragForce(*body, 0.015f);
         body->AddForce(dragForce);
 
-        Vec2 weightForce = Vec2(0, 15.0f * PIXELS_PER_METER) * body->mass;
-        body->AddForce(weightForce);
-
-        /*Vec2 windForce = Vec2(3.0f * PIXELS_PER_METER, 10.0f * PIXELS_PER_METER);
-        body->AddForce(windForce);*/
-
-        /*float torque = 15.0f * PIXELS_PER_METER;
-        body->AddTorque(torque);*/
-
         body->Update(fixedDeltaTime);
     }
 
@@ -108,7 +106,7 @@ void RigidbodiesProject::FixedUpdate()
 
             if (CollisionDetection::IsColliding(body, otherBody, contactInfo))
             {
-                CollisionResolution::ResolveCollision(contactInfo);
+                //CollisionResolution::ResolveCollision(contactInfo);
 
                 _contactInfo = contactInfo;
                 _isCollision = true;
@@ -159,7 +157,7 @@ void RigidbodiesProject::Render()
 {
     for (Body*& body : _bodies)
     {
-        Color color = body == _bodies[0] ? WHITE : GREEN;
+        Color color = false ? RED : WHITE;
 
         if (body->shape->GetType() == CIRCLE)
         {
@@ -171,6 +169,13 @@ void RigidbodiesProject::Render()
             PolygonShape* polygon = dynamic_cast<PolygonShape*>(body->shape);
             DUDraw::DrawPolygon(body->position, polygon->worldVertices, color);
         }
+    }
+
+    // Draw contact info
+    if (_isCollision)
+    {
+        DrawCircle(_contactInfo.start.x, _contactInfo.start.y, 5.0f, GREEN);
+        DrawCircle(_contactInfo.end.x, _contactInfo.end.y, 5.0f, GREEN);
     }
 }
 

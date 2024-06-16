@@ -68,7 +68,7 @@ void Body::IntegrateLinear(float dt)
 
     if (velocity.MagnitudeSquared() >= MAX_VELOCITY * MAX_VELOCITY)
     {
-        velocity = velocity.UnitVector() * MAX_VELOCITY;
+        velocity = velocity.Normal() * MAX_VELOCITY;
     }
 
     position += velocity * dt;

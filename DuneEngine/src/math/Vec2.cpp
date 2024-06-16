@@ -56,7 +56,8 @@ void Vec2::Normalize()
     }
 }
 
-Vec2 Vec2::UnitVector() const
+// Returns a new vector that is the normalized unit vector version of this vector
+Vec2 Vec2::Normal() const
 {
     Vec2 result = Vec2(x, y);
     result.Normalize();
@@ -64,7 +65,7 @@ Vec2 Vec2::UnitVector() const
     return result;
 }
 
-Vec2 Vec2::Normal() const
+Vec2 Vec2::NormalPerpendicular() const
 {
     Vec2 normal = Vec2(y, -x);
     normal.Normalize();

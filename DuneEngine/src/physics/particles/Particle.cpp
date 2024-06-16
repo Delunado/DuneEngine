@@ -1,8 +1,6 @@
 #include "Particle.h"
 
-#include <algorithm>
-
-#include "../Config.h"
+#include "../../Config.h"
 
 Particle::Particle(const Vec2& position, float mass): radius(0)
 {
@@ -37,7 +35,7 @@ void Particle::Integrate(float dt)
 
     if (velocity.MagnitudeSquared() >= MAX_VELOCITY * MAX_VELOCITY)
     {
-        velocity = velocity.UnitVector() * MAX_VELOCITY;
+        velocity = velocity.Normal() * MAX_VELOCITY;
     }
 
     position += velocity * dt;

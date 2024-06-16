@@ -26,6 +26,15 @@ float PolygonShape::GetMomentOfInertia() const
     return 0.0f;
 }
 
+Vec2 PolygonShape::EdgeAt(int index) const
+{
+    int currentVertex = index;
+    int nextVertex = (index + 1) % worldVertices.size();
+
+    Vec2 edge = worldVertices[nextVertex] - worldVertices[currentVertex];
+    return edge;
+}
+
 void PolygonShape::UpdateVertices(const Vec2& position, float rotation)
 {
     for (int i = 0; i < worldVertices.size(); i++)
@@ -33,6 +42,41 @@ void PolygonShape::UpdateVertices(const Vec2& position, float rotation)
         worldVertices[i] = localVertices[i].Rotate(rotation);
         worldVertices[i] += position;
     }
+}
+
+float PolygonShape::FindMinSeparation(const PolygonShape& other, Vec2& axis, Vec2& point) const
+{
+    float separation = std::numeric_limits<float>::lowest();
+
+    for (int i = 0; i < worldVertices.size(); i++)
+    {
+        Vec2 vertexA = worldVertices[i];
+        Vec2 normal = EdgeAt(i).NormalPerpendicular();
+
+        float minSeparation = std::numeric_limits<float>::max();
+        Vec2 minVertex;
+
+        for (Vec2 vertexB : other.worldVertices)
+        {
+            float projection = (vertexB - vertexA).Dot(normal);
+
+            if (projection < minSeparation)
+            {
+                minSeparation = projection;
+                minVertex = vertexB;
+            }
+        }
+
+        if (minSeparation > separation)
+        {
+            axis = this->EdgeAt(i);
+            point = minVertex;
+        }
+
+        separation = std::max(separation, minSeparation);
+    }
+
+    return separation;
 }
 
 PolygonShape* PolygonShape::Clone() const

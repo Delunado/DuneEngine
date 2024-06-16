@@ -11,10 +11,10 @@ uniform float time; // Elapsed time for dynamic effects
 uniform int renderWidth = 800; // Dynamic render width
 uniform int renderHeight = 800; // Dynamic render height
 uniform float scanlineEffectIntensity = 0.45f; // Intensity of scanline effect
-uniform float curvatureDistortion = 0.05f; // Amount of curvature distortion
+uniform float curvatureDistortion = 0.2f; // Amount of curvature distortion
 uniform float vignetteStrength = 0.8f; // Strength of vignette effect
-uniform vec2 colorOffset = vec2(0.001f, 0.001f);
-uniform float borderSize = 0.01f;
+uniform vec2 colorOffset = vec2(0.0015f, 0.0015f);
+uniform float borderSize = 0.05f;
 
 // Output fragment color
 out vec4 finalColor;

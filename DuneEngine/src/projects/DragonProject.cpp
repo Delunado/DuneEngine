@@ -67,7 +67,7 @@ void DragonProject::Input()
 
     if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
     {
-        const Vec2 direction = (_particles[0]->position - _currentMousePosition).UnitVector();
+        const Vec2 direction = (_particles[0]->position - _currentMousePosition).Normal();
         const float force = (_particles[0]->position - _currentMousePosition).Magnitude() * 3.0f;
 
         _particles[0]->velocity = direction * force;
