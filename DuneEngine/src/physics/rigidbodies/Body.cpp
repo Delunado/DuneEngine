@@ -22,6 +22,7 @@ Body::Body(const Shape& shape, const Vec2& position, float mass)
     this->netForce = Vec2(0.0f, 0.0f);
     this->netTorque = 0.0f;
     this->restitution = 1.0f;
+    this->friction = 0.5f;
     this->isColliding = false;
 
     if (mass != 0.0f)
@@ -115,6 +116,14 @@ void Body::ApplyImpulse(const Vec2& impulse)
     if (IsStatic()) return;
 
     velocity += impulse * inverseMass;
+}
+
+void Body::ApplyImpulseAtPoint(const Vec2& impulse, const Vec2& point)
+{
+    if (IsStatic()) return;
+
+    ApplyImpulse(impulse);
+    angularVelocity += point.Cross(impulse) * inverseMomentOfInertia;
 }
 
 void Body::Update(const float dt)

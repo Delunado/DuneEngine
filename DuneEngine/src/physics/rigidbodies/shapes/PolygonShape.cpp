@@ -51,7 +51,7 @@ float PolygonShape::FindMinSeparation(const PolygonShape& other, Vec2& axis, Vec
     for (int i = 0; i < worldVertices.size(); i++)
     {
         Vec2 vertexA = worldVertices[i];
-        Vec2 normal = EdgeAt(i).NormalPerpendicular();
+        Vec2 normal = EdgeAt(i).Perpendicular();
 
         float minSeparation = std::numeric_limits<float>::max();
         Vec2 minVertex;

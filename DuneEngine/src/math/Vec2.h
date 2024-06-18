@@ -20,7 +20,7 @@ struct Vec2
 
     void Normalize();
     Vec2 Normal() const;
-    Vec2 NormalPerpendicular() const;
+    Vec2 Perpendicular() const;
 
     float Dot(const Vec2& v) const;
     float Cross(const Vec2& v) const;

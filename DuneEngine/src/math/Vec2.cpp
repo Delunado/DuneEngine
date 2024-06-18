@@ -1,5 +1,6 @@
 #include "Vec2.h"
 #include <cmath>
+#include <iostream>
 
 Vec2::Vec2(): x(0.0), y(0.0)
 {
@@ -48,8 +49,10 @@ float Vec2::MagnitudeSquared() const
 void Vec2::Normalize()
 {
     const float length = Magnitude();
+    const float epsilon = 1e-6f; // or some small value appropriate for your scale
 
-    if (length != 0.0)
+    // Use epsilon to protect against divide by zero
+    if (length > epsilon)
     {
         x /= length;
         y /= length;
@@ -65,7 +68,7 @@ Vec2 Vec2::Normal() const
     return result;
 }
 
-Vec2 Vec2::NormalPerpendicular() const
+Vec2 Vec2::Perpendicular() const
 {
     Vec2 normal = Vec2(y, -x);
     normal.Normalize();

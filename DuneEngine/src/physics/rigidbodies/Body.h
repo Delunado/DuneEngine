@@ -17,6 +17,7 @@ public:
     void ClearTorque();
 
     void ApplyImpulse(const Vec2& impulse);
+    void ApplyImpulseAtPoint(const Vec2& impulse, const Vec2& point);
 
     void Update(float dt);
 
@@ -46,6 +47,7 @@ public:
 
     // Collision
     float restitution;
+    float friction;
     bool isColliding;
 
 private:

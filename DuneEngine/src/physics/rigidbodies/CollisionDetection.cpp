@@ -80,14 +80,14 @@ bool CollisionDetection::IsCollidingPolygonPolygon(Body* bodyA, Body* bodyB, Con
     if (ABseparation > BAseparation)
     {
         contactInfo.depth = -ABseparation;
-        contactInfo.normal = edgeA.NormalPerpendicular();
+        contactInfo.normal = edgeA.Perpendicular();
         contactInfo.start = startPointA;
         contactInfo.end = startPointA + contactInfo.normal * contactInfo.depth;
     }
     else
     {
         contactInfo.depth = -BAseparation;
-        contactInfo.normal = -edgeB.NormalPerpendicular();
+        contactInfo.normal = -edgeB.Perpendicular();
         contactInfo.start = startPointB - contactInfo.normal * contactInfo.depth;
         contactInfo.end = startPointB;
     }
