@@ -653,6 +653,9 @@
   <ItemGroup>
     <Content Include="shaders\scanlines.glsl" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="assets\" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

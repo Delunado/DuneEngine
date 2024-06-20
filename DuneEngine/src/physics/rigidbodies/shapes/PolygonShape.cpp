@@ -23,7 +23,7 @@ ShapeType PolygonShape::GetType() const
 
 float PolygonShape::GetMomentOfInertia() const
 {
-    return 0.0f;
+    return 4000.0f;
 }
 
 Vec2 PolygonShape::EdgeAt(int index) const

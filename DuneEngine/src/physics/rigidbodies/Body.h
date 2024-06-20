@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <raylib.h>
+
 #include "../../math/Vec2.h"
 
 struct Shape;
@@ -9,6 +11,9 @@ struct Body
 public:
     Body(const Shape& shape, const Vec2& position, float mass);
     ~Body();
+
+    void SetTexture(Texture2D* _texture);
+    Texture2D* GetTexture() const;
 
     void AddForce(const Vec2& force);
     void ClearForces();
@@ -50,7 +55,11 @@ public:
     float friction;
     bool isColliding;
 
+
 private:
     void IntegrateLinear(float dt);
     void IntegrateAngular(float dt);
+    
+    //Visuals - Temporal!
+    Texture2D* _texture;
 };

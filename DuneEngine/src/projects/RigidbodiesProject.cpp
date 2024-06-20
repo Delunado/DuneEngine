@@ -22,49 +22,17 @@ void RigidbodiesProject::Setup()
     float centerX = WINDOW_WIDTH / 2.0f;
     float centerY = WINDOW_HEIGHT / 2.0f;
 
-    // Box A
-    /*Body* boxA = new Body(BoxShape(50.0f, 50.0f), Vec2(centerX - 300.0f, centerY - 200.0f), 5.0f);
-    _bodies.push_back(boxA);
-
-    // Box B
-    Body* boxB = new Body(BoxShape(200.0f, 100.0f), Vec2(centerX + 300.0f, centerY - 200.0f), 5.0f);
-    _bodies.push_back(boxB);
-
-    // Box C
-    Body* boxC = new Body(BoxShape(150.0f, 80.0f), Vec2(centerX - 300.0f, centerY + 200.0f), 5.0f);
-    _bodies.push_back(boxC);*/
-
-    // Define the height of the equilateral triangle based on side length
-    float sideLength = 100.0f;
-    float height = (sqrt(3.0f) / 2.0f) * sideLength;
-
-    // Equilateral Triangle
-    Body* triangle = new Body(PolygonShape({
-                                  Vec2(-sideLength / 2.0f, -height / 3.0f), // Bottom left vertex
-                                  Vec2(sideLength / 2.0f, -height / 3.0f), // Bottom right vertex
-                                  Vec2(0.0f, 2.0f * height / 3.0f) // Top vertex
-                              }), Vec2(centerX + 300.0f, centerY + 200.0f), 5.0f);
-    _bodies.push_back(triangle);
-    triangle->rotation = 0.5f;
-
-    // Pentagon
-    Body* pentagon = new Body(PolygonShape({
-                                  Vec2(0.0f, -50.0f), Vec2(47.6f, -15.5f), Vec2(29.4f, 40.4f),
-                                  Vec2(-29.4f, 40.4f), Vec2(-47.6f, -15.5f)
-                              }), Vec2(centerX, centerY), 5.0f);
-    _bodies.push_back(pentagon);
-
-    // Circle A
-    /*Body* circleA = new Body(CircleShape(50.0f), Vec2(centerX - 300.0f, centerY - 200.0f), 5.0f);
-    _bodies.push_back(circleA);
-
-    Body* circleB = new Body(CircleShape(100.0f), Vec2(centerX + 300.0f, centerY - 200.0f), 5.0f);
-    _bodies.push_back(circleB);*/
+    //Create an hexagon. Create a polygon with the 6 vertices, counter-clockwise
+    Body* hexagon = new Body(PolygonShape({
+                                 Vec2(0.0f, -45.0f), Vec2(43.3f, -25.0f), Vec2(43.3f, 25.0f),
+                                 Vec2(0.0f, 50.0f), Vec2(-49.3f, 25.0f), Vec2(-36.3f, -25.0f)
+                             }),
+                             Vec2(centerX, centerY), 10.0f);
+    _bodies.push_back(hexagon);
 
     // Create a static floor
     Body* floor = new Body(BoxShape(WINDOW_WIDTH, 50.0f), Vec2(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT - 35.0f), 0.0f);
     floor->restitution = 0.2f;
-    floor->friction = 0.7f;
     _bodies.push_back(floor);
 
     // Create a static wall on the left
@@ -79,34 +47,107 @@ void RigidbodiesProject::Setup()
 
     // Create a static ceiling
     Body* ceiling = new Body(BoxShape(WINDOW_WIDTH, 50.0f), Vec2(WINDOW_WIDTH / 2.0f, 25.0f), 0.0f);
-    ceiling->restitution = 0.2f;
+    ceiling->restitution = 0.7f;
     _bodies.push_back(ceiling);
 
     // Create a static box in the middle
     Body* boxD = new Body(BoxShape(100.0f, 100.0f), Vec2(centerX, centerY), 0.0f);
-    boxD->restitution = 0.8f;
+    boxD->restitution = 1.0f;
     boxD->friction = 0.4f;
     boxD->rotation = 0.5f;
     _bodies.push_back(boxD);
+
+    // Box 1 - Top left
+    Body* box1 = new Body(BoxShape(100.0f, 50.0f), Vec2(130.0f, 150.0f), 0.0f);
+    box1->restitution = 0.8f;
+    box1->friction = 0.3f;
+    box1->rotation = 0.1f;
+    _bodies.push_back(box1);
+
+    // Box 2 - Top right
+    Body* box2 = new Body(BoxShape(80.0f, 120.0f), Vec2(WINDOW_WIDTH - 170.0f, 180.0f), 0.0f);
+    box2->restitution = 0.8f;
+    box2->friction = 0.3f;
+    box2->rotation = -0.2f;
+    _bodies.push_back(box2);
+
+    // Box 3 - Bottom left
+    Body* box3 = new Body(BoxShape(100.0f, 100.0f), Vec2(160.0f, WINDOW_HEIGHT - 140.0f), 0.0f);
+    box3->restitution = 0.8f;
+    box3->friction = 0.3f;
+    box3->rotation = 0.4f;
+    _bodies.push_back(box3);
+
+    // Box 4 - Bottom right
+    Body* box4 = new Body(BoxShape(90.0f, 90.0f), Vec2(WINDOW_WIDTH - 160.0f, WINDOW_HEIGHT - 160.0f), 0.0f);
+    box4->restitution = 0.8f;
+    box4->friction = 0.3f;
+    box4->rotation = -0.5f;
+    _bodies.push_back(box4);
+
+    // Box 5 - Center left
+    Body* box5 = new Body(BoxShape(70.0f, 110.0f), Vec2(200.0f, centerY - 30.0f), 0.0f);
+    box5->restitution = 0.8f;
+    box5->friction = 0.3f;
+    box5->rotation = -0.3f;
+    _bodies.push_back(box5);
+
+    // Box 6 - Center right
+    Body* box6 = new Body(BoxShape(100.0f, 70.0f), Vec2(WINDOW_WIDTH - 200.0f, centerY + 30.0f), 0.0f);
+    box6->restitution = 0.8f;
+    box6->friction = 0.3f;
+    box6->rotation = 0.2f;
+    _bodies.push_back(box6);
+
+    // Box 7 - Middle upper
+    Body* box7 = new Body(BoxShape(100.0f, 50.0f), Vec2(centerX + 100.0f, centerY - 150.0f), 0.0f);
+    box7->restitution = 0.8f;
+    box7->friction = 0.3f;
+    box7->rotation = 0.3f;
+    _bodies.push_back(box7);
+
+    // Box 8 - Middle lower
+    Body* box8 = new Body(BoxShape(50.0f, 100.0f), Vec2(centerX - 100.0f, centerY + 200.0f), 0.0f);
+    box8->restitution = 0.8f;
+    box8->friction = 0.3f;
+    box8->rotation = -0.4f;
+    _bodies.push_back(box8);
 }
 
 void RigidbodiesProject::Input()
 {
     Vector2 mousePosition = GetMousePosition();
 
+    //Follow mouse position the body 0
+    //_bodies[0]->position = Vec2(mousePosition.x, mousePosition.y);
+
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
-        // Create a box with random size
-        float width = GetRandomValue(25, 75);
-        float height = GetRandomValue(25, 75);
+        int random = GetRandomValue(0, 1);
 
-        Body* box = new Body(BoxShape(width, height), Vec2(mousePosition.x, mousePosition.y), 5.0f);
-        box->rotation = GetRandomValue(0, PI * 2.0f);
-        _bodies.push_back(box);
+        if (random == 0)
+        {
+            // Create a box with random size
+            float width = GetRandomValue(25, 75);
+            float height = GetRandomValue(25, 75);
 
-        // Create a ball
-        /*Body* circle = new Body(CircleShape(GetRandomValue(10, 50)), Vec2(mousePosition.x, mousePosition.y), 5.0f);
-        _bodies.push_back(circle);*/
+            Body* box = new Body(BoxShape(width, height), Vec2(mousePosition.x, mousePosition.y), 5.0f);
+            box->rotation = GetRandomValue(0, PI * 2.0f);
+            box->friction = 0.7f;
+            _bodies.push_back(box);
+        }
+        else
+        {
+            // Create a ball
+            Body* circle = new Body(CircleShape(GetRandomValue(15, 30)), Vec2(mousePosition.x, mousePosition.y), 5.0f);
+            circle->restitution = 0.9f;
+            circle->friction = 0.15f;
+
+            Texture2D texture = LoadTexture("assets/ball.png");
+            circle->SetTexture(&texture);
+
+            _bodies.push_back(circle);
+        }
     }
 
     //IF space is pressed, apply random impulse to bodies
@@ -129,8 +170,8 @@ void RigidbodiesProject::FixedUpdate()
 {
     for (Body* body : _bodies)
     {
-        /*Vec2 dragForce = Force::GenerateDragForce(*body, 0.015f);
-        body->AddForce(dragForce);*/
+        Vec2 dragForce = Force::GenerateDragForce(*body, 0.015f);
+        body->AddForce(dragForce);
 
         Vec2 weightForce = Vec2(0.0f, body->mass * 9.8f * PIXELS_PER_METER);
         body->AddForce(weightForce);
@@ -168,17 +209,28 @@ void RigidbodiesProject::Render()
 {
     for (Body*& body : _bodies)
     {
-        Color color = false ? RED : WHITE;
+        if (body->GetTexture() != nullptr)
+        {
+            Vector2 position;
+            position.x = body->position.x - body->GetTexture()->width / 2.0f;
+            position.y = body->position.y - body->GetTexture()->height / 2.0f;
 
-        if (body->shape->GetType() == CIRCLE)
-        {
-            CircleShape* circle = dynamic_cast<CircleShape*>(body->shape);
-            DUDraw::DrawCircleLinesAngle(body->position.x, body->position.y, circle->radius, body->rotation, color);
+            DrawTextureEx(*body->GetTexture(), position, body->rotation * RAD2DEG, 1.0f, WHITE);
         }
-        else if (body->shape->GetType() == BOX || body->shape->GetType() == POLYGON)
+        else
         {
-            PolygonShape* polygon = dynamic_cast<PolygonShape*>(body->shape);
-            DUDraw::DrawPolygon(body->position, polygon->worldVertices, color);
+            if (body->shape->GetType() == CIRCLE)
+            {
+                Color color = RAYWHITE;
+                CircleShape* circle = dynamic_cast<CircleShape*>(body->shape);
+                DUDraw::DrawCircleLinesAngle(body->position.x, body->position.y, circle->radius, body->rotation, color);
+            }
+            else if (body->shape->GetType() == BOX || body->shape->GetType() == POLYGON)
+            {
+                Color color = LIGHTGRAY;
+                PolygonShape* polygon = dynamic_cast<PolygonShape*>(body->shape);
+                DUDraw::DrawPolygon(body->position, polygon->worldVertices, color);
+            }
         }
     }
 

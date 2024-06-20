@@ -25,6 +25,8 @@ Body::Body(const Shape& shape, const Vec2& position, float mass)
     this->friction = 0.5f;
     this->isColliding = false;
 
+    _texture = nullptr;
+
     if (mass != 0.0f)
     {
         this->inverseMass = 1.0f / mass;
@@ -51,6 +53,16 @@ Body::~Body()
     delete shape;
 
     std::cout << "Body destroyed" << std::endl;
+}
+
+void Body::SetTexture(Texture2D* texture)
+{
+    _texture = texture;
+}
+
+Texture2D* Body::GetTexture() const
+{
+    return _texture;
 }
 
 void Body::IntegrateLinear(float dt)
