@@ -22,7 +22,7 @@ public:
      * @param position The position of the body.
      * @param rotation The rotation of the body.
      */
-    void UpdateVertices(const Vec2& position, float rotation);
+    void UpdateVertices(const Vec2& position, float rotation) override;
     float FindMinSeparation(const PolygonShape& other, Vec2& axis, Vec2& point) const;
 
     PolygonShape* Clone() const override;

@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "Body.h"
+#include "shapes/Shape.h"
 
 void CollisionResolution::ResolvePenetration(ContactInfo& contactInfo)
 {
@@ -15,6 +16,9 @@ void CollisionResolution::ResolvePenetration(ContactInfo& contactInfo)
 
     contactInfo.bodyA->position -= contactInfo.normal * displacementA;
     contactInfo.bodyB->position += contactInfo.normal * displacementB;
+
+    contactInfo.bodyA->shape->UpdateVertices(contactInfo.bodyA->position, contactInfo.bodyA->rotation);
+    contactInfo.bodyB->shape->UpdateVertices(contactInfo.bodyB->position, contactInfo.bodyB->rotation);
 }
 
 void CollisionResolution::ResolveCollision(ContactInfo& contactInfo)

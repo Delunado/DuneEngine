@@ -619,6 +619,7 @@
       <AdditionalIncludeDirectories>D:\GameDev\C++\DuneEngine\DuneEngine\\include</AdditionalIncludeDirectories>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
+    <ClCompile Include="src\physics\World.cpp" />
     <ClCompile Include="src\projects\BaseProject.cpp" />
     <ClCompile Include="src\projects\BouncyBallsProject.cpp" />
     <ClCompile Include="src\projects\DragonProject.cpp" />
@@ -641,6 +642,7 @@
     <ClInclude Include="src\physics\rigidbodies\shapes\CircleShape.h" />
     <ClInclude Include="src\physics\rigidbodies\shapes\PolygonShape.h" />
     <ClInclude Include="src\physics\rigidbodies\shapes\Shape.h" />
+    <ClInclude Include="src\physics\World.h" />
     <ClInclude Include="src\projects\BaseProject.h" />
     <ClInclude Include="src\projects\BouncyBallsProject.h" />
     <ClInclude Include="src\projects\DragonProject.h" />

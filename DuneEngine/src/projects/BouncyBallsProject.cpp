@@ -63,11 +63,11 @@ void BouncyBallsProject::Input()
     }
 }
 
-void BouncyBallsProject::Update()
+void BouncyBallsProject::Update(float dt)
 {
 }
 
-void BouncyBallsProject::FixedUpdate()
+void BouncyBallsProject::FixedUpdate(float dt)
 {
     for (Body* body : _bodies)
     {

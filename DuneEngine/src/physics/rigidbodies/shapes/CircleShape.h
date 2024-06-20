@@ -9,6 +9,9 @@ public:
 
     ShapeType GetType() const override;
     float GetMomentOfInertia() const override;
+
+    void UpdateVertices(const Vec2& position, float rotation) override;
+
     CircleShape* Clone() const override;
 
     float radius;

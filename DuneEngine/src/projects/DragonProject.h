@@ -13,8 +13,8 @@ public:
 
     void Setup() override;
     void Input() override;
-    void Update() override;
-    void FixedUpdate() override;
+    void Update(float dt) override;
+    void FixedUpdate(float dt) override;
     void Render() override;
     void Cleanup() override;
 

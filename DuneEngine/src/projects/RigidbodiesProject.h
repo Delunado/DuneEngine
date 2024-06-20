@@ -4,6 +4,7 @@
 #include "BaseProject.h"
 #include "../physics/rigidbodies/ContactInfo.h"
 
+class World;
 struct Body;
 
 class RigidbodiesProject : public BaseProject
@@ -13,13 +14,12 @@ public:
 
     void Setup() override;
     void Input() override;
-    void Update() override;
-    void FixedUpdate() override;
+    void Update(float dt) override;
+    void FixedUpdate(float dt) override;
     void Render() override;
     void Cleanup() override;
 
 private:
-    std::vector<Body*> _bodies;
+    World* _world;
     ContactInfo _contactInfo;
-    bool _isCollision;
 };

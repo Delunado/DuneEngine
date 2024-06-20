@@ -11,6 +11,7 @@ D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\rigidbodies\shapes\BoxShape.cpp
 D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\rigidbodies\shapes\CircleShape.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\CircleShape.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\rigidbodies\shapes\PolygonShape.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\PolygonShape.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\rigidbodies\shapes\Shape.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\Shape.obj
+D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\World.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\World.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\projects\BaseProject.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\BaseProject.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\projects\BouncyBallsProject.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\BouncyBallsProject.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\projects\DragonProject.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\DragonProject.obj

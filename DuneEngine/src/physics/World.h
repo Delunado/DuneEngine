@@ -1,0 +1,32 @@
+﻿#pragma once
+#include <vector>
+
+#include "../math/Vec2.h"
+
+struct Body;
+
+class World
+{
+public:
+    World(const Vec2& gravity);
+    ~World();
+
+    void AddBody(Body* body);
+    std::vector<Body*>& GetBodies();
+
+    void AddForce(const Vec2& force);
+    void AddImpulse(const Vec2& impulse);
+    void AddTorque(float torque);
+
+    void Update(float dt) const;
+
+private:
+    void CheckCollisions() const;
+
+    Vec2 _gravity;
+
+    std::vector<Body*> _bodies;
+    std::vector<Vec2> _forces;
+    std::vector<Vec2> _impulses;
+    std::vector<float> _torques;
+};

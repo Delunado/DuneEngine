@@ -143,11 +143,7 @@ void Body::Update(const float dt)
     IntegrateLinear(dt);
     IntegrateAngular(dt);
 
-    if (shape->GetType() == BOX || shape->GetType() == POLYGON)
-    {
-        PolygonShape* polygon = dynamic_cast<PolygonShape*>(shape);
-        polygon->UpdateVertices(position, rotation);
-    }
+    shape->UpdateVertices(position, rotation);
 }
 
 bool Body::IsStatic() const

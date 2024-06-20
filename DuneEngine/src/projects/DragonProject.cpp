@@ -76,11 +76,11 @@ void DragonProject::Input()
     }
 }
 
-void DragonProject::Update()
+void DragonProject::Update(float dt)
 {
 }
 
-void DragonProject::FixedUpdate()
+void DragonProject::FixedUpdate(float dt)
 {
     // For each particle, connect it to the next one with a spring
     for (int i = 1; i < _particles.size(); i++)

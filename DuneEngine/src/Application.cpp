@@ -57,14 +57,14 @@ void Application::Update()
 
     _stepAccumulator += deltaTime;
 
-    _currentProject->Update();
+    _currentProject->Update(deltaTime);
 }
 
 void Application::FixedUpdate()
 {
     while (_stepAccumulator >= fixedDeltaTime)
     {
-        _currentProject->FixedUpdate();
+        _currentProject->FixedUpdate(fixedDeltaTime);
 
         _stepAccumulator -= fixedDeltaTime;
     }
@@ -93,9 +93,9 @@ void Application::Render()
     constexpr Vector2 origin = {0.0f, 0.0f};
 
     DrawTextureRec(_renderTarget.texture, sourceRec, origin, WHITE);
-    
+
     DURenderer::EndShaderMode();
-    
+
     DrawFPS(10, 10);
 
     EndDrawing();
