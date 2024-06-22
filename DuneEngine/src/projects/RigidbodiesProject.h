@@ -22,4 +22,6 @@ public:
 private:
     World* _world;
     ContactInfo _contactInfo;
+
+    Body* _character;
 };

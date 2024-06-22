@@ -60,7 +60,7 @@ void World::Update(float dt) const
 
         for (Vec2 force : _forces)
         {
-            body->AddForce(force * PIXELS_PER_METER);
+            body->AddForce(force);
         }
 
         for (Vec2 impulse : _impulses)
@@ -72,7 +72,10 @@ void World::Update(float dt) const
         {
             body->AddTorque(torque * PIXELS_PER_METER);
         }
+    }
 
+    for (Body* body : _bodies)
+    {
         body->Update(dt);
     }
 

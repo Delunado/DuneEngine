@@ -8,6 +8,11 @@ void DUDraw::DrawCircleLinesAngle(int startPosX, int startPosY, float radius, fl
     DrawLine(startPosX, startPosY, startPosX + radius * cos(angle), startPosY + radius * sin(angle), color);
 }
 
+void DUDraw::DrawCircleLinesAngle(const Vec2& position, float radius, float angle, Color color)
+{
+    DrawCircleLinesAngle(position.x, position.y, radius, angle, color);
+}
+
 void DUDraw::DrawPolygon(std::vector<Vec2>& vertices, Color color)
 {
     // Going through all vertices, drawing lines between them
@@ -24,4 +29,17 @@ void DUDraw::DrawPolygon(const Vec2& center, std::vector<Vec2>& vertices, Color 
 {
     DrawCircle(center.x, center.y, 2.0f, color);
     DrawPolygon(vertices, color);
+}
+
+void DUDraw::DrawTexture(const Texture2D& texture, const Vec2& position, const Vec2& origin, float rotation,
+                         float scale, Color tint)
+{
+    DrawTexturePro(
+        texture,
+        Rectangle{0, 0, (float)texture.width, (float)texture.height}, // Source rectangle
+        Rectangle{position.x, position.y, texture.width * scale, texture.height * scale}, // Destination rectangle
+        Vector2{origin.x * scale, origin.y * scale}, // Origin of rotation, scaled accordingly
+        rotation,
+        tint
+    );
 }

@@ -1,5 +1,6 @@
 ﻿#include "RigidbodiesProject.h"
 
+#include <algorithm>
 #include <iostream>
 #include <raylib.h>
 
@@ -19,6 +20,13 @@ void RigidbodiesProject::Setup()
 {
     float centerX = WINDOW_WIDTH / 2.0f;
     float centerY = WINDOW_HEIGHT / 2.0f;
+
+    _character = new Body(CircleShape(20.0f), Vec2(centerX, centerY), 2.0f);
+    _character->restitution = 0.2f;
+    _world->AddBody(_character);
+
+    Texture2D* characterTexture = new Texture2D(LoadTexture("assets/ball.png"));
+    _character->SetTexture(characterTexture);
 
     //Create an hexagon. Create a polygon with the 6 vertices, counter-clockwise
     Body* hexagon = new Body(PolygonShape({
@@ -63,7 +71,7 @@ void RigidbodiesProject::Setup()
     _world->AddBody(box1);
 
     // Box 2 - Top right
-    Body* box2 = new Body(BoxShape(80.0f, 120.0f), Vec2(WINDOW_WIDTH - 170.0f, 180.0f), 0.0f);
+    Body* box2 = new Body(BoxShape(80.0f, 120.0f), Vec2(WINDOW_WIDTH - 170.0f, 180.0f), 2.0f);
     box2->restitution = 0.8f;
     box2->friction = 0.3f;
     box2->rotation = -0.2f;
@@ -77,7 +85,7 @@ void RigidbodiesProject::Setup()
     _world->AddBody(box3);
 
     // Box 4 - Bottom right
-    Body* box4 = new Body(BoxShape(90.0f, 90.0f), Vec2(WINDOW_WIDTH - 160.0f, WINDOW_HEIGHT - 160.0f), 0.0f);
+    Body* box4 = new Body(BoxShape(90.0f, 90.0f), Vec2(WINDOW_WIDTH - 160.0f, WINDOW_HEIGHT - 160.0f), 2.0f);
     box4->restitution = 0.8f;
     box4->friction = 0.3f;
     box4->rotation = -0.5f;
@@ -91,7 +99,7 @@ void RigidbodiesProject::Setup()
     _world->AddBody(box5);
 
     // Box 6 - Center right
-    Body* box6 = new Body(BoxShape(100.0f, 70.0f), Vec2(WINDOW_WIDTH - 200.0f, centerY + 30.0f), 0.0f);
+    Body* box6 = new Body(BoxShape(100.0f, 70.0f), Vec2(WINDOW_WIDTH - 200.0f, centerY + 30.0f), 2.0f);
     box6->restitution = 0.8f;
     box6->friction = 0.3f;
     box6->rotation = 0.2f;
@@ -105,13 +113,24 @@ void RigidbodiesProject::Setup()
     _world->AddBody(box7);
 
     // Box 8 - Middle lower
-    Body* box8 = new Body(BoxShape(50.0f, 100.0f), Vec2(centerX - 100.0f, centerY + 200.0f), 0.0f);
+    Body* box8 = new Body(BoxShape(50.0f, 100.0f), Vec2(centerX - 100.0f, centerY + 200.0f), 2.0f);
     box8->restitution = 0.8f;
     box8->friction = 0.3f;
     box8->rotation = -0.4f;
     _world->AddBody(box8);
 
-    _world->AddForce(Vec2(4.0f, 0.0f));
+    // Create a platform static box in a place, then create a non static slim box on top of it
+    Body* platform = new Body(BoxShape(200.0f, 50.0f), Vec2(centerX, centerY + 200.0f), 0.0f);
+    platform->restitution = 0.8f;
+    platform->friction = 0.3f;
+    _world->AddBody(platform);
+
+    Body* box9 = new Body(BoxShape(50.0f, 20.0f), Vec2(centerX, centerY + 220.0f), 2.0f);
+    box9->restitution = 0.8f;
+    box9->friction = 0.3f;
+    _world->AddBody(box9);
+
+    //_world->AddForce(Vec2(4.0f, 0.0f));
 }
 
 void RigidbodiesProject::Input()
@@ -125,8 +144,8 @@ void RigidbodiesProject::Input()
         circle->restitution = 0.9f;
         circle->friction = 0.15f;
 
-        Texture2D texture = LoadTexture("assets/ball.png");
-        circle->SetTexture(&texture);
+        Texture2D* texture = new Texture2D(LoadTexture("assets/ball.png"));
+        circle->SetTexture(texture);
 
         _world->AddBody(circle);
     }
@@ -143,11 +162,25 @@ void RigidbodiesProject::Input()
         _world->AddBody(box);
     }
 
-    //IF space is pressed, apply random impulse to bodies
-    if (IsKeyPressed(KEY_SPACE))
+    // Move the character
+    if (IsKeyDown(KEY_A))
     {
-        /*_world->AddImpulse(Vec2(GetRandomValue(-1200.0f, 1200.0f),
-                                GetRandomValue(-800.0f, -1200.0f)));*/
+        _character->AddForce(Vec2(-1.0f * PIXELS_PER_METER, 0.0f));
+    }
+
+    if (IsKeyDown(KEY_D))
+    {
+        _character->AddForce(Vec2(1.0f * PIXELS_PER_METER, 0.0f));
+    }
+
+    if (IsKeyDown(KEY_W))
+    {
+        _character->AddForce(Vec2(0.0f, -1.0f * PIXELS_PER_METER));
+    }
+
+    if (IsKeyDown(KEY_S))
+    {
+        _character->AddForce(Vec2(0.0f, 1.0f * PIXELS_PER_METER));
     }
 }
 
@@ -166,11 +199,18 @@ void RigidbodiesProject::Render()
     {
         if (body->GetTexture() != nullptr)
         {
-            Vector2 position;
-            position.x = body->position.x - body->GetTexture()->width / 2.0f;
-            position.y = body->position.y - body->GetTexture()->height / 2.0f;
+            if (body->shape->GetType() == CIRCLE)
+            {
+                CircleShape* circle = dynamic_cast<CircleShape*>(body->shape);
 
-            DrawTextureEx(*body->GetTexture(), position, body->rotation * RAD2DEG, 1.0f, WHITE);
+                float scale = (circle->radius / body->GetTexture()->width) * 2.0f;
+                Vec2 position = body->position;
+                Vec2 origin = Vec2(body->GetTexture()->width * 0.5f, body->GetTexture()->height * 0.5f);
+
+                //DUDraw::DrawCircleLinesAngle(position, circle->radius, body->rotation, WHITE);
+                DUDraw::DrawTexture(*body->GetTexture(), position, origin, body->rotation * RAD2DEG, scale,
+                                    LIGHTGRAY);
+            }
         }
         else
         {
