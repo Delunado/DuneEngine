@@ -27,14 +27,16 @@ uniform float vignetteStrength = 0.8f; // Strength of vignette effect
 uniform float vignetteStart = 0.1; // Start of vignette effect
 uniform float vignetteEnd = 0.8; // End of vignette effect
 
-uniform vec2 colorOffset = vec2(0.001f, 0.001f); // Color channel offset
-
 uniform float noiseIntensity = 0.075f; // Intensity of noise effect
 uniform float noiseSpeed = 0.001f; // Speed of noise movement
 
 uniform float flickerIntensity = 0.0065f; // Intensity of screen flicker effect
 
 uniform vec3 colorTint = vec3(1.0, 0.95, 0.92); // Color tint for aged look
+
+uniform float chromaticAberrationIntensity = 0.0015; // Intensity of chromatic aberration
+uniform float interlacingIntensity = 0.01; // Intensity of interlacing effect
+uniform float pixelMaskIntensity = 0.04; // Intensity of pixel mask effect
 
 // Output fragment color
 out vec4 finalColor;
@@ -64,15 +66,12 @@ void main()
     float vignette = 1.0 - smoothstep(vignetteStart, vignetteEnd, dist);
     vignette = mix(vignetteStrength, 1.0, vignette);
 
-    // Animate RGB offsets
-    vec2 animatedColorOffset = colorOffset * vec2(sin(adjustedTime), cos(adjustedTime));
-
-    // Phosphor screen effect: Slightly offset the color channels
-    vec3 color = vec3(
-        texture(texture0, uv + vec2(-animatedColorOffset.x, 0.0)).r, // Red channel offset
-        texture(texture0, uv).g, // Green channel centered
-        texture(texture0, uv + vec2(animatedColorOffset.y, 0.0)).b // Blue channel offset
-    );
+    // Chromatic aberration
+    float aberration = chromaticAberrationIntensity * (1.0 + dist);
+    vec3 color;
+    color.r = texture(texture0, uv - vec2(aberration, 0.0)).r;
+    color.g = texture(texture0, uv).g;
+    color.b = texture(texture0, uv + vec2(aberration, 0.0)).b;
 
     // Add dynamic noise effect
     float noise = (rand(uv * 10.0) - 0.5) * noiseIntensity;
@@ -81,6 +80,18 @@ void main()
     // Apply moving scanlines effect
     float scanline = sin((uv.y + adjustedTime * scanlineSpeed) * scanlineFrequency * scanlineEffectIntensity) * scanlineHeight + (1.0 - scanlineHeight);
     color *= scanline;
+
+    // Interlacing effect
+    float interlace = mod(gl_FragCoord.y + adjustedTime * 100.0, 2.0);
+    color = mix(color, color * (1.0 - interlacingIntensity), interlace);
+
+    // Pixel mask effect
+    vec2 pixelCoord = gl_FragCoord.xy / vec2(3.0);
+    vec3 mask = vec3(1.0);
+    if (mod(pixelCoord.x, 3.0) < 1.0) mask.r = 1.0 - pixelMaskIntensity;
+    else if (mod(pixelCoord.x, 3.0) < 2.0) mask.g = 1.0 - pixelMaskIntensity;
+    else mask.b = 1.0 - pixelMaskIntensity;
+    color *= mask;
 
     // Add screen flicker
     float flicker = sin(adjustedTime * 60.0) * flickerIntensity + 1.0 - flickerIntensity;

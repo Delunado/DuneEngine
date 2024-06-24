@@ -36,6 +36,10 @@ private:
     Color _bgColor;
     DUShader _scanlinesShader;
     RenderTexture2D _renderTarget;
+    bool _shaderEnabled;
+
+    Texture2D* _cursorTexture;
+    Vec2 _cursorPos;
 
     float _stepAccumulator;
 };

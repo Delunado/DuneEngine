@@ -6,12 +6,13 @@
 #include "Config.h"
 #include "projects/BouncyBallsProject.h"
 #include "projects/RigidbodiesProject.h"
+#include "render/DUDraw.h"
 #include "render/DURenderer.h"
 #include "render/DUShader.h"
 
 struct Particle;
 
-Application::Application()
+Application::Application(): _shaderEnabled(true)
 {
     _running = true;
     _currentProject = new RigidbodiesProject();
@@ -40,12 +41,36 @@ void Application::Setup()
 
     _renderTarget = LoadRenderTexture(WINDOW_WIDTH, WINDOW_HEIGHT);
 
+    _cursorTexture = new Texture2D(LoadTexture("assets/cursor.png"));
+
     _currentProject->Setup();
+
+    HideCursor();
 }
 
 void Application::Input()
 {
     _currentProject->Input();
+
+    Vector2 newCursorPos = GetMousePosition();
+    _cursorPos = {newCursorPos.x, newCursorPos.y};
+
+    if (IsKeyPressed(KEY_F1))
+    {
+        _shaderEnabled = !_shaderEnabled;
+    }
+
+    if (IsKeyPressed(KEY_F2))
+    {
+        if (IsCursorHidden())
+        {
+            ShowCursor();
+        }
+        else
+        {
+            HideCursor();
+        }
+    }
 }
 
 void Application::Update()
@@ -75,26 +100,42 @@ void Application::Render()
     const float time = GetTime();
     _scanlinesShader.SetFloat("time", time);
 
-    BeginTextureMode(_renderTarget);
-    ClearBackground(_bgColor);
+    if (_shaderEnabled)
+    {
+        BeginTextureMode(_renderTarget);
 
-    _currentProject->Render();
+        ClearBackground(_bgColor);
+        _currentProject->Render();
+        Vec2 cursorOrigin = Vec2(_cursorTexture->width * 0.5f, _cursorTexture->height * 0.5f);
+        DUDraw::DrawTexture(*_cursorTexture, _cursorPos, cursorOrigin, 0.0f, 1.0f, GREEN);
 
-    EndTextureMode();
+        EndTextureMode();
+    }
 
     BeginDrawing();
 
-    DURenderer::BeginShaderMode(_scanlinesShader);
+    if (_shaderEnabled)
+    {
+        DURenderer::BeginShaderMode(_scanlinesShader);
 
-    const Rectangle sourceRec = {
-        0.0f, 0.0f, static_cast<float>(_renderTarget.texture.width), static_cast<float>(-_renderTarget.texture.height)
-    };
+        const Rectangle sourceRec = {
+            0.0f, 0.0f, static_cast<float>(_renderTarget.texture.width),
+            static_cast<float>(-_renderTarget.texture.height)
+        };
 
-    constexpr Vector2 origin = {0.0f, 0.0f};
+        constexpr Vector2 origin = {0.0f, 0.0f};
 
-    DrawTextureRec(_renderTarget.texture, sourceRec, origin, WHITE);
+        DrawTextureRec(_renderTarget.texture, sourceRec, origin, WHITE);
 
-    DURenderer::EndShaderMode();
+        DURenderer::EndShaderMode();
+    }
+    else
+    {
+        ClearBackground(_bgColor);
+        _currentProject->Render();
+        Vec2 cursorOrigin = Vec2(_cursorTexture->width * 0.5f, _cursorTexture->height * 0.5f);
+        DUDraw::DrawTexture(*_cursorTexture, _cursorPos, cursorOrigin, 0.0f, 1.0f, GREEN);
+    }
 
     DrawFPS(10, 10);
 

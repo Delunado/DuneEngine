@@ -1,6 +1,8 @@
 D:\GameDev\C++\DuneEngine\DuneEngine\src\Application.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\Application.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\Main.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\Main.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\math\Vec2.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\Vec2.obj
+D:\GameDev\C++\DuneEngine\DuneEngine\src\math\VecN.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\VecN.obj
+D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\Constraint.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\Constraint.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\Force.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\Force.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\particles\Particle.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\Particle.obj
 D:\GameDev\C++\DuneEngine\DuneEngine\src\physics\rigidbodies\Body.cpp;D:\GameDev\C++\DuneEngine\DuneEngine\x64\Debug\Body.obj

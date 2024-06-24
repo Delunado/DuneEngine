@@ -25,7 +25,7 @@ void RigidbodiesProject::Setup()
     _character->restitution = 0.2f;
     _world->AddBody(_character);
 
-    Texture2D* characterTexture = new Texture2D(LoadTexture("assets/ball.png"));
+    Texture2D* characterTexture = new Texture2D(LoadTexture("assets/face.png"));
     _character->SetTexture(characterTexture);
 
     //Create an hexagon. Create a polygon with the 6 vertices, counter-clockwise
@@ -71,7 +71,7 @@ void RigidbodiesProject::Setup()
     _world->AddBody(box1);
 
     // Box 2 - Top right
-    Body* box2 = new Body(BoxShape(80.0f, 120.0f), Vec2(WINDOW_WIDTH - 170.0f, 180.0f), 2.0f);
+    Body* box2 = new Body(BoxShape(80.0f, 120.0f), Vec2(WINDOW_WIDTH - 170.0f, 180.0f), 0.0f);
     box2->restitution = 0.8f;
     box2->friction = 0.3f;
     box2->rotation = -0.2f;
@@ -85,7 +85,7 @@ void RigidbodiesProject::Setup()
     _world->AddBody(box3);
 
     // Box 4 - Bottom right
-    Body* box4 = new Body(BoxShape(90.0f, 90.0f), Vec2(WINDOW_WIDTH - 160.0f, WINDOW_HEIGHT - 160.0f), 2.0f);
+    Body* box4 = new Body(BoxShape(90.0f, 90.0f), Vec2(WINDOW_WIDTH - 160.0f, WINDOW_HEIGHT - 160.0f), 0.0f);
     box4->restitution = 0.8f;
     box4->friction = 0.3f;
     box4->rotation = -0.5f;
@@ -99,7 +99,7 @@ void RigidbodiesProject::Setup()
     _world->AddBody(box5);
 
     // Box 6 - Center right
-    Body* box6 = new Body(BoxShape(100.0f, 70.0f), Vec2(WINDOW_WIDTH - 200.0f, centerY + 30.0f), 2.0f);
+    Body* box6 = new Body(BoxShape(100.0f, 70.0f), Vec2(WINDOW_WIDTH - 200.0f, centerY + 30.0f), 0.0f);
     box6->restitution = 0.8f;
     box6->friction = 0.3f;
     box6->rotation = 0.2f;
@@ -113,22 +113,11 @@ void RigidbodiesProject::Setup()
     _world->AddBody(box7);
 
     // Box 8 - Middle lower
-    Body* box8 = new Body(BoxShape(50.0f, 100.0f), Vec2(centerX - 100.0f, centerY + 200.0f), 2.0f);
+    Body* box8 = new Body(BoxShape(50.0f, 100.0f), Vec2(centerX - 100.0f, centerY + 200.0f), 0.0f);
     box8->restitution = 0.8f;
     box8->friction = 0.3f;
     box8->rotation = -0.4f;
     _world->AddBody(box8);
-
-    // Create a platform static box in a place, then create a non static slim box on top of it
-    Body* platform = new Body(BoxShape(200.0f, 50.0f), Vec2(centerX, centerY + 200.0f), 0.0f);
-    platform->restitution = 0.8f;
-    platform->friction = 0.3f;
-    _world->AddBody(platform);
-
-    Body* box9 = new Body(BoxShape(50.0f, 20.0f), Vec2(centerX, centerY + 220.0f), 2.0f);
-    box9->restitution = 0.8f;
-    box9->friction = 0.3f;
-    _world->AddBody(box9);
 
     //_world->AddForce(Vec2(4.0f, 0.0f));
 }
@@ -144,7 +133,7 @@ void RigidbodiesProject::Input()
         circle->restitution = 0.9f;
         circle->friction = 0.15f;
 
-        Texture2D* texture = new Texture2D(LoadTexture("assets/ball.png"));
+        Texture2D* texture = new Texture2D(LoadTexture("assets/face.png"));
         circle->SetTexture(texture);
 
         _world->AddBody(circle);
