@@ -10,6 +10,7 @@ public:
 
     void Zero() const;
     float Dot(const VecN& other) const;
+    int Count() const;
 
     VecN& operator =(const VecN& other);
     VecN operator +(const VecN& other) const;

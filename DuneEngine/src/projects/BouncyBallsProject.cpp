@@ -83,7 +83,8 @@ void BouncyBallsProject::FixedUpdate(float dt)
         /*float torque = 15.0f * PIXELS_PER_METER;
         body->AddTorque(torque);*/
 
-        body->Update(fixedDeltaTime);
+        body->IntegrateForces(dt);
+        body->IntegrateVelocities(dt);
     }
 
     ContactInfo contactInfo;

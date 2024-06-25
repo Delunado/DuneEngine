@@ -65,43 +65,6 @@ Texture2D* Body::GetTexture() const
     return _texture;
 }
 
-void Body::IntegrateLinear(float dt)
-{
-    if (IsStatic()) return;
-
-    acceleration = netForce * inverseMass;
-
-    velocity += acceleration * dt;
-
-    if (velocity.MagnitudeSquared() <= MIN_VELOCITY * MIN_VELOCITY)
-    {
-        velocity.x = 0.0f;
-        velocity.y = 0.0f;
-    }
-
-    if (velocity.MagnitudeSquared() >= MAX_VELOCITY * MAX_VELOCITY)
-    {
-        velocity = velocity.Normal() * MAX_VELOCITY;
-    }
-
-    position += velocity * dt;
-
-    ClearForces();
-}
-
-void Body::IntegrateAngular(float dt)
-{
-    if (IsStatic()) return;
-
-    angularAcceleration = netTorque * inverseMomentOfInertia;
-
-    angularVelocity += angularAcceleration * dt;
-
-    rotation += angularVelocity * dt;
-
-    ClearTorque();
-}
-
 void Body::AddForce(const Vec2& force)
 {
     netForce += force;
@@ -132,18 +95,62 @@ void Body::ApplyImpulse(const Vec2& impulse)
 
 void Body::ApplyImpulseAtPoint(const Vec2& impulse, const Vec2& point)
 {
-    if (IsStatic()) return;
+    if (IsStatic())
+        return;
 
     ApplyImpulse(impulse);
     angularVelocity += point.Cross(impulse) * inverseMomentOfInertia;
 }
 
-void Body::Update(const float dt)
+void Body::IntegrateForces(float dt)
 {
-    IntegrateLinear(dt);
-    IntegrateAngular(dt);
+    if (IsStatic())
+        return;
+
+    acceleration = netForce * inverseMass;
+    velocity += acceleration * dt;
+
+    angularAcceleration = netTorque * inverseMomentOfInertia;
+    angularVelocity += angularAcceleration * dt;
+
+    ClearForces();
+    ClearTorque();
+}
+
+void Body::IntegrateVelocities(float dt)
+{
+    if (IsStatic())
+        return;
+
+    if (velocity.MagnitudeSquared() <= MIN_VELOCITY * MIN_VELOCITY)
+    {
+        velocity.x = 0.0f;
+        velocity.y = 0.0f;
+    }
+
+    if (velocity.MagnitudeSquared() >= MAX_VELOCITY * MAX_VELOCITY)
+    {
+        velocity = velocity.Normal() * MAX_VELOCITY;
+    }
+
+    position += velocity * dt;
+    rotation += angularVelocity * dt;
 
     shape->UpdateVertices(position, rotation);
+}
+
+Vec2 Body::LocalToWorldSpace(const Vec2& point) const
+{
+    Vec2 rotatedPoint = point.Rotate(rotation);
+    return rotatedPoint + position;
+}
+
+Vec2 Body::WorldToLocalSpace(const Vec2& point) const
+{
+    Vec2 translatedPoint = point - position;
+    Vec2 correctPoint = translatedPoint.Rotate(-rotation);
+
+    return correctPoint;
 }
 
 bool Body::IsStatic() const

@@ -1,16 +1,18 @@
 ﻿#pragma once
-#include "../math/VecN.h"
+#include "../math/MatrixMN.h"
 
 struct Body;
 
 class Constraint
 {
 public:
-    Body* bodyA;
-    Body* bodyB;
+    virtual ~Constraint() = default;
 
-    //MatMN GetJacobianMatrix();
-    VecN GetBiasVector();
+    Body* _bodyA;
+    Body* _bodyB;
 
-    void Solve();
+    MatrixMN GetInverseMassMatrix();
+    VecN GetVelocities() const;
+
+    virtual void Solve() = 0;
 };

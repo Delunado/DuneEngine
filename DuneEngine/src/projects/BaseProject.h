@@ -3,6 +3,8 @@
 class BaseProject
 {
 public:
+    virtual ~BaseProject() = default;
+
     virtual void Setup() = 0;
 
     virtual void Input() = 0;

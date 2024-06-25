@@ -5,6 +5,7 @@
 
 #include "Config.h"
 #include "projects/BouncyBallsProject.h"
+#include "projects/ConstraintsProject.h"
 #include "projects/RigidbodiesProject.h"
 #include "render/DUDraw.h"
 #include "render/DURenderer.h"
@@ -15,7 +16,7 @@ struct Particle;
 Application::Application(): _shaderEnabled(true)
 {
     _running = true;
-    _currentProject = new RigidbodiesProject();
+    _currentProject = new ConstraintsProject();
 }
 
 Application::~Application()

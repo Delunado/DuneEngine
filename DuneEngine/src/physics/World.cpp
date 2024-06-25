@@ -1,5 +1,6 @@
 ﻿#include "World.h"
 
+#include "Constraint.h"
 #include "../Config.h"
 
 #include "Force.h"
@@ -13,6 +14,7 @@ World::World(const Vec2& gravity)
     _gravity = Vec2(gravity.x, -gravity.y);
 
     _bodies.reserve(100);
+    _constraints.reserve(100);
     _forces.reserve(100);
     _impulses.reserve(100);
     _torques.reserve(100);
@@ -24,6 +26,11 @@ World::~World()
     {
         delete body;
     }
+
+    for (Constraint* constraint : _constraints)
+    {
+        delete constraint;
+    }
 }
 
 void World::AddBody(Body* body)
@@ -34,6 +41,16 @@ void World::AddBody(Body* body)
 std::vector<Body*>& World::GetBodies()
 {
     return _bodies;
+}
+
+void World::AddConstraint(Constraint* constraint)
+{
+    _constraints.push_back(constraint);
+}
+
+std::vector<Constraint*>& World::GetConstraints()
+{
+    return _constraints;
 }
 
 void World::AddForce(const Vec2& force)
@@ -53,6 +70,8 @@ void World::AddTorque(float torque)
 
 void World::Update(float dt) const
 {
+    if (_bodies.empty()) return;
+
     for (Body* body : _bodies)
     {
         Vec2 gravityForce = _gravity * body->mass * PIXELS_PER_METER;
@@ -74,9 +93,22 @@ void World::Update(float dt) const
         }
     }
 
+    // First we calculate the forces acting on the bodies
     for (Body* body : _bodies)
     {
-        body->Update(dt);
+        body->IntegrateForces(dt);
+    }
+
+    // Solve all constraints, will modify velocities
+    for (Constraint* const& constraint : _constraints)
+    {
+        constraint->Solve();
+    }
+
+    // Finally we integrate the velocities to get the new positions
+    for (Body* body : _bodies)
+    {
+        body->IntegrateVelocities(dt);
     }
 
     CheckCollisions();

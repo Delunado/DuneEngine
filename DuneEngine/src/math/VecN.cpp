@@ -49,6 +49,11 @@ float VecN::Dot(const VecN& other) const
     return result;
 }
 
+int VecN::Count() const
+{
+    return _N;
+}
+
 VecN& VecN::operator=(const VecN& other)
 {
     if (this == &other) return *this;

@@ -24,7 +24,11 @@ public:
     void ApplyImpulse(const Vec2& impulse);
     void ApplyImpulseAtPoint(const Vec2& impulse, const Vec2& point);
 
-    void Update(float dt);
+    void IntegrateForces(float dt);
+    void IntegrateVelocities(float dt);
+
+    Vec2 LocalToWorldSpace(const Vec2& point) const;
+    Vec2 WorldToLocalSpace(const Vec2& point) const;
 
     bool IsStatic() const;
 
@@ -55,11 +59,7 @@ public:
     float friction;
     bool isColliding;
 
-
 private:
-    void IntegrateLinear(float dt);
-    void IntegrateAngular(float dt);
-    
     //Visuals - Temporal!
     Texture2D* _texture;
 };
