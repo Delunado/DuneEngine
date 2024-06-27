@@ -23,17 +23,93 @@ void ConstraintsProject::Setup()
     float centerX = WINDOW_WIDTH / 2.0f;
     float centerY = WINDOW_HEIGHT / 2.0f;
 
-    Body* a = new Body(CircleShape(30.0f), Vec2(centerX, centerY), 0.0f);
-    Body* b = new Body(CircleShape(20.0f), Vec2(centerX - 100.0f, centerY), 1.0f);
-    _world->AddBody(a);
-    _world->AddBody(b);
+    const int NUM_BODIES = 5;
+    for (int i = 0; i < NUM_BODIES; i++)
+    {
+        float mass = (i == 0) ? 0.0f : 1.0f;
+        Body* body = new Body(BoxShape(30.0f, 30.0f), Vec2(centerX - i * 40.0f, centerY - 100), mass);
+        _world->AddBody(body);
+        _lastJointBody = body;
+    }
 
-    JointConstraint* joint = new JointConstraint(a, b, a->position);
-    _world->AddConstraint(joint);
+    for (int i = 0; i < NUM_BODIES - 1; i++)
+    {
+        Body* a = _world->GetBodies()[i];
+        Body* b = _world->GetBodies()[i + 1];
+        JointConstraint* joint = new JointConstraint(a, b, a->position);
+        _world->AddConstraint(joint);
+    }
+
+    // Create a static floor
+    Body* floor = new Body(BoxShape(WINDOW_WIDTH, 50.0f), Vec2(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT - 35.0f), 0.0f);
+    floor->restitution = 0.2f;
+    _world->AddBody(floor);
+
+    // Create a static wall on the left
+    Body* wallLeft = new Body(BoxShape(50.0f, WINDOW_HEIGHT - 115), Vec2(25.0f, WINDOW_HEIGHT / 2.02f), 0.0f);
+    wallLeft->restitution = 0.9f;
+    _world->AddBody(wallLeft);
+
+    Body* wallRight = new Body(BoxShape(50.0f, WINDOW_HEIGHT - 115), Vec2(WINDOW_WIDTH - 25.0f, WINDOW_HEIGHT / 2.02f),
+                               0.0f);
+    wallRight->restitution = 0.9f;
+    _world->AddBody(wallRight);
+
+    // Create a static ceiling
+    Body* ceiling = new Body(BoxShape(WINDOW_WIDTH, 50.0f), Vec2(WINDOW_WIDTH / 2.0f, 25.0f), 0.0f);
+    ceiling->restitution = 0.7f;
+    _world->AddBody(ceiling);
 }
 
 void ConstraintsProject::Input()
 {
+    Vector2 mousePosition = GetMousePosition();
+
+    // If pressing A or D, apply a force to the world in the X axis
+    if (IsKeyPressed(KEY_A))
+    {
+        _lastJointBody->ApplyLinearImpulse(Vec2(-10.0f * PIXELS_PER_METER, 0.0f));
+    }
+
+    if (IsKeyPressed(KEY_D))
+    {
+        _lastJointBody->ApplyLinearImpulse(Vec2(10.0f * PIXELS_PER_METER, 0.0f));
+    }
+
+    if (IsKeyPressed(KEY_W))
+    {
+        _lastJointBody->ApplyLinearImpulse(Vec2(0.0f, -10.0f * PIXELS_PER_METER));
+    }
+
+    if (IsKeyPressed(KEY_S))
+    {
+        _lastJointBody->ApplyLinearImpulse(Vec2(0.0f, 10.0f * PIXELS_PER_METER));
+    }
+
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    {
+        // Create a ball
+        Body* circle = new Body(CircleShape(GetRandomValue(15, 30)), Vec2(mousePosition.x, mousePosition.y), 5.0f);
+        circle->restitution = 0.9f;
+        circle->friction = 0.15f;
+
+        Texture2D* texture = new Texture2D(LoadTexture("assets/face.png"));
+        circle->SetTexture(texture);
+
+        _world->AddBody(circle);
+    }
+
+    if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON))
+    {
+        // Create a box with random size
+        float width = GetRandomValue(25, 75);
+        float height = GetRandomValue(25, 75);
+
+        Body* box = new Body(BoxShape(width, height), Vec2(mousePosition.x, mousePosition.y), 5.0f);
+        box->rotation = GetRandomValue(0, PI * 2.0f);
+        box->friction = 0.7f;
+        _world->AddBody(box);
+    }
 }
 
 void ConstraintsProject::Update(float dt)
@@ -47,6 +123,15 @@ void ConstraintsProject::FixedUpdate(float dt)
 
 void ConstraintsProject::Render()
 {
+    // Join every constraint bodies with a line
+    for (size_t i = 0; i < _world->GetConstraints().size(); i++)
+    {
+        Body* bodyA = _world->GetConstraints()[i]->_bodyA;
+        Body* bodyB = _world->GetConstraints()[i]->_bodyB;
+
+        DrawLine(bodyA->position.x, bodyA->position.y, bodyB->position.x, bodyB->position.y, RED);
+    }
+
     for (Body*& body : _world->GetBodies())
     {
         if (body->GetTexture() != nullptr)

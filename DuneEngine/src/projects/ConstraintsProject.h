@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "BaseProject.h"
 
+struct Body;
 class World;
 
 class ConstraintsProject : public BaseProject
@@ -17,4 +18,5 @@ public:
 
 private:
     World* _world;
+    Body* _lastJointBody;
 };

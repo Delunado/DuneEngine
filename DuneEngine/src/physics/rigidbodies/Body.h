@@ -21,7 +21,8 @@ public:
     void AddTorque(float torque);
     void ClearTorque();
 
-    void ApplyImpulse(const Vec2& impulse);
+    void ApplyLinearImpulse(const Vec2& impulse);
+    void ApplyAngularImpulse(float impulse);
     void ApplyImpulseAtPoint(const Vec2& impulse, const Vec2& point);
 
     void IntegrateForces(float dt);

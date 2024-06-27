@@ -58,7 +58,7 @@ void BouncyBallsProject::Input()
         {
             Vec2 impulse = Vec2(GetRandomValue(-800.0f * PIXELS_PER_METER, 800.0f * PIXELS_PER_METER),
                                 GetRandomValue(-800.0f * PIXELS_PER_METER, 800.0f * PIXELS_PER_METER));
-            _bodies[i]->ApplyImpulse(impulse * _bodies[i]->mass);
+            _bodies[i]->ApplyLinearImpulse(impulse * _bodies[i]->mass);
         }
     }
 }

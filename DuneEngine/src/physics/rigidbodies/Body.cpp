@@ -46,6 +46,8 @@ Body::Body(const Shape& shape, const Vec2& position, float mass)
     {
         this->inverseMomentOfInertia = 0.0f;
     }
+
+    this->shape->UpdateVertices(position, rotation);
 }
 
 Body::~Body()
@@ -86,11 +88,18 @@ void Body::ClearTorque()
     netTorque = 0.0f;
 }
 
-void Body::ApplyImpulse(const Vec2& impulse)
+void Body::ApplyLinearImpulse(const Vec2& impulse)
 {
     if (IsStatic()) return;
 
     velocity += impulse * inverseMass;
+}
+
+void Body::ApplyAngularImpulse(float impulse)
+{
+    if (IsStatic()) return;
+
+    angularVelocity += impulse * inverseMomentOfInertia;
 }
 
 void Body::ApplyImpulseAtPoint(const Vec2& impulse, const Vec2& point)
@@ -98,8 +107,8 @@ void Body::ApplyImpulseAtPoint(const Vec2& impulse, const Vec2& point)
     if (IsStatic())
         return;
 
-    ApplyImpulse(impulse);
-    angularVelocity += point.Cross(impulse) * inverseMomentOfInertia;
+    ApplyLinearImpulse(impulse);
+    ApplyAngularImpulse(point.Cross(impulse));
 }
 
 void Body::IntegrateForces(float dt)

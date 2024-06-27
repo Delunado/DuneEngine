@@ -51,6 +51,27 @@ MatrixMN MatrixMN::Transpose() const
     return result;
 }
 
+VecN MatrixMN::SolveGaussSeidel(const MatrixMN& leftHandSide, const VecN& rightHandSide, int iterations)
+{
+    const int rows = leftHandSide._rowsNumber;
+    VecN x(rows);
+    x.Zero();
+
+    for (int k = 0; k < iterations; k++)
+    {
+        for (int i = 0; i < rows; i++)
+        {
+            float deltaX = (rightHandSide[i] / leftHandSide[i][i]) - (leftHandSide[i].Dot(x) / leftHandSide[i][i]);
+            if (deltaX == deltaX) // This is a check for NaN, preventing them
+            {
+                x[i] += deltaX;
+            }
+        }
+    }
+
+    return x;
+}
+
 const MatrixMN& MatrixMN::operator=(const MatrixMN& other)
 {
     delete[] _rows;

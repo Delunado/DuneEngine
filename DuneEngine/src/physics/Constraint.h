@@ -14,5 +14,7 @@ public:
     MatrixMN GetInverseMassMatrix();
     VecN GetVelocities() const;
 
+    virtual void PreSolve(const float dt) = 0;
     virtual void Solve() = 0;
+    virtual void PostSolve() = 0;
 };

@@ -84,7 +84,7 @@ void World::Update(float dt) const
 
         for (Vec2 impulse : _impulses)
         {
-            body->ApplyImpulse(impulse * body->mass * PIXELS_PER_METER);
+            body->ApplyLinearImpulse(impulse * body->mass * PIXELS_PER_METER);
         }
 
         for (float torque : _torques)
@@ -99,10 +99,24 @@ void World::Update(float dt) const
         body->IntegrateForces(dt);
     }
 
-    // Solve all constraints, will modify velocities
+    // Pre-solve all constraints, using cached lambda
     for (Constraint* const& constraint : _constraints)
     {
-        constraint->Solve();
+        constraint->PreSolve(dt);
+    }
+
+    // Solve all constraints, will modify velocities
+    for (int i = 0; i < 5; i++)
+    {
+        for (Constraint* const& constraint : _constraints)
+        {
+            constraint->Solve();
+        }
+    }
+
+    for (Constraint* const& constraint : _constraints)
+    {
+        constraint->PostSolve();
     }
 
     // Finally we integrate the velocities to get the new positions

@@ -13,6 +13,7 @@ public:
     void Zero() const;
     MatrixMN Transpose() const;
 
+    static VecN SolveGaussSeidel(const MatrixMN& leftHandSide, const VecN& rightHandSide, int iterations);
 
     const MatrixMN& operator =(const MatrixMN& other);
     VecN operator *(const VecN& other) const;
