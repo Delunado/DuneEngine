@@ -36,7 +36,7 @@ void Application::Setup()
 
     _bgColor = {45, 45, 45, 255};
 
-    _scanlinesShader = DUShader(nullptr, "./shaders/scanlines.glsl");
+    _scanlinesShader = DUShader(nullptr, "./assets/shaders/scanlines.glsl");
     _scanlinesShader.SetFloat("renderWidth", WINDOW_WIDTH);
     _scanlinesShader.SetFloat("renderHeight", WINDOW_HEIGHT);
 

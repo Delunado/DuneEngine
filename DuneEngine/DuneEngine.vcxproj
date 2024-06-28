@@ -739,9 +739,6 @@
     <ClInclude Include="src\utils\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="shaders\scanlines.glsl" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="assets\" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
