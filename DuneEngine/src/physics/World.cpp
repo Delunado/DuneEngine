@@ -4,6 +4,7 @@
 #include "../Config.h"
 
 #include "Force.h"
+#include "PenetrationConstraint.h"
 #include "rigidbodies/Body.h"
 #include "rigidbodies/CollisionDetection.h"
 #include "rigidbodies/CollisionResolution.h"
@@ -72,6 +73,9 @@ void World::Update(float dt) const
 {
     if (_bodies.empty()) return;
 
+    // Temporary, this is for resolving penetration constraints this frame
+    std::vector<PenetrationConstraint> penetrations;
+
     for (Body* body : _bodies)
     {
         Vec2 gravityForce = _gravity * body->mass * PIXELS_PER_METER;
@@ -99,37 +103,7 @@ void World::Update(float dt) const
         body->IntegrateForces(dt);
     }
 
-    // Pre-solve all constraints, using cached lambda
-    for (Constraint* const& constraint : _constraints)
-    {
-        constraint->PreSolve(dt);
-    }
-
-    // Solve all constraints, will modify velocities
-    for (int i = 0; i < 5; i++)
-    {
-        for (Constraint* const& constraint : _constraints)
-        {
-            constraint->Solve();
-        }
-    }
-
-    for (Constraint* const& constraint : _constraints)
-    {
-        constraint->PostSolve();
-    }
-
-    // Finally we integrate the velocities to get the new positions
-    for (Body* body : _bodies)
-    {
-        body->IntegrateVelocities(dt);
-    }
-
-    CheckCollisions();
-}
-
-void World::CheckCollisions() const
-{
+    // Then we check for collisions
     for (int i = 0; i <= _bodies.size() - 1; i++)
     {
         for (int j = i + 1; j < _bodies.size(); j++)
@@ -140,8 +114,54 @@ void World::CheckCollisions() const
             ContactInfo contactInfo;
             if (CollisionDetection::IsColliding(body, otherBody, contactInfo))
             {
-                CollisionResolution::ResolveCollision(contactInfo);
+                penetrations.emplace_back(contactInfo.bodyA, contactInfo.bodyB, contactInfo.start,
+                                          contactInfo.end, contactInfo.normal);
             }
         }
     }
+
+    // Pre-solve all constraints, using cached lambda
+    for (Constraint* const& constraint : _constraints)
+    {
+        constraint->PreSolve(dt);
+    }
+
+    for (PenetrationConstraint& penetration : penetrations)
+    {
+        penetration.PreSolve(dt);
+    }
+
+    // Solve all constraints, will modify velocities
+    for (int i = 0; i < 5; i++)
+    {
+        for (Constraint* const& constraint : _constraints)
+        {
+            constraint->Solve();
+        }
+
+        for (PenetrationConstraint& penetration : penetrations)
+        {
+            penetration.Solve();
+        }
+    }
+
+    for (Constraint* const& constraint : _constraints)
+    {
+        constraint->PostSolve();
+    }
+
+    for (PenetrationConstraint& penetration : penetrations)
+    {
+        penetration.PostSolve();
+    }
+
+    // Finally we integrate the velocities to get the new positions
+    for (Body* body : _bodies)
+    {
+        body->IntegrateVelocities(dt);
+    }
+}
+
+void World::CheckCollisions() const
+{
 }

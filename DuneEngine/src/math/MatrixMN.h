@@ -15,7 +15,7 @@ public:
 
     static VecN SolveGaussSeidel(const MatrixMN& leftHandSide, const VecN& rightHandSide, int iterations);
 
-    const MatrixMN& operator =(const MatrixMN& other);
+    MatrixMN& operator =(const MatrixMN& other);
     VecN operator *(const VecN& other) const;
     MatrixMN operator *(const MatrixMN& other) const;
     VecN& operator [](const int index) const;

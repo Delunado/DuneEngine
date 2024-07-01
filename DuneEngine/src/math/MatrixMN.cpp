@@ -9,18 +9,19 @@ MatrixMN::MatrixMN(): _rowsNumber(0), _columnsNumber(0), _rows(nullptr)
 MatrixMN::MatrixMN(int rowsNumber, int columnsNumber): _rowsNumber(rowsNumber), _columnsNumber(columnsNumber)
 {
     _rows = new VecN[_rowsNumber];
-
     for (int i = 0; i < _rowsNumber; i++)
     {
         _rows[i] = VecN(_columnsNumber);
     }
 }
 
-MatrixMN::MatrixMN(const MatrixMN& other)
+MatrixMN::MatrixMN(const MatrixMN& other) : _rowsNumber(other._rowsNumber), _columnsNumber(other._columnsNumber)
 {
-    if (this == &other) return;
-
-    *this = other;
+    _rows = new VecN[_rowsNumber];
+    for (int i = 0; i < _rowsNumber; i++)
+    {
+        _rows[i] = other._rows[i];
+    }
 }
 
 MatrixMN::~MatrixMN()
@@ -72,16 +73,20 @@ VecN MatrixMN::SolveGaussSeidel(const MatrixMN& leftHandSide, const VecN& rightH
     return x;
 }
 
-const MatrixMN& MatrixMN::operator=(const MatrixMN& other)
+MatrixMN& MatrixMN::operator=(const MatrixMN& other)
 {
+    if (this == &other) return *this;
+
+    // Free existing resources
     delete[] _rows;
 
+    // Assign new values
     _rowsNumber = other._rowsNumber;
     _columnsNumber = other._columnsNumber;
 
+    // Allocate new memory and copy elements
     _rows = new VecN[_rowsNumber];
-    for (int i = 0; i < _rowsNumber; i++)
-    {
+    for (int i = 0; i < _rowsNumber; i++) {
         _rows[i] = other._rows[i];
     }
 
