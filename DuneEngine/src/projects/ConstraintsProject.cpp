@@ -102,12 +102,12 @@ void ConstraintsProject::Input()
     if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON))
     {
         // Create a box with random size
-        float width = GetRandomValue(25, 75);
-        float height = GetRandomValue(25, 75);
+        float width = GetRandomValue(75, 75);
+        float height = GetRandomValue(75, 75);
 
         Body* box = new Body(BoxShape(width, height), Vec2(mousePosition.x, mousePosition.y), 5.0f);
         box->rotation = GetRandomValue(0, PI * 2.0f);
-        box->friction = 0.7f;
+        box->friction = 0.3f;
         _world->AddBody(box);
     }
 }

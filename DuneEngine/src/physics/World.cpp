@@ -23,12 +23,12 @@ World::World(const Vec2& gravity)
 
 World::~World()
 {
-    for (Body* body : _bodies)
+    for (auto body : _bodies)
     {
         delete body;
     }
 
-    for (Constraint* constraint : _constraints)
+    for (auto constraint : _constraints)
     {
         delete constraint;
     }
@@ -121,12 +121,12 @@ void World::Update(float dt) const
     }
 
     // Pre-solve all constraints, using cached lambda
-    for (Constraint* const& constraint : _constraints)
+    for (auto& constraint : _constraints)
     {
         constraint->PreSolve(dt);
     }
 
-    for (PenetrationConstraint& penetration : penetrations)
+    for (auto& penetration : penetrations)
     {
         penetration.PreSolve(dt);
     }
@@ -134,23 +134,23 @@ void World::Update(float dt) const
     // Solve all constraints, will modify velocities
     for (int i = 0; i < 5; i++)
     {
-        for (Constraint* const& constraint : _constraints)
-        {
-            constraint->Solve();
-        }
-
-        for (PenetrationConstraint& penetration : penetrations)
+        for (auto& penetration : penetrations)
         {
             penetration.Solve();
         }
+        
+        for (auto& constraint : _constraints)
+        {
+            constraint->Solve();
+        }
     }
 
-    for (Constraint* const& constraint : _constraints)
+    for (auto& constraint : _constraints)
     {
         constraint->PostSolve();
     }
 
-    for (PenetrationConstraint& penetration : penetrations)
+    for (auto& penetration : penetrations)
     {
         penetration.PostSolve();
     }

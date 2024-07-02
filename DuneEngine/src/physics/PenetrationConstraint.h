@@ -15,14 +15,15 @@ public:
 
 private:
     void ApplyImpulses(const VecN& lambda) const;
-    
+
     MatrixMN _jacobian;
     VecN _cachedLambda;
 
     float _bias;
-    float _beta = 0.15f;
+    float _beta = 0.2f;
 
     Vec2 _collisionPointA; // Local collision point on body A
     Vec2 _collisionPointB; // Local collision point on body B
     Vec2 _normal;
+    float _friction;
 };
