@@ -111,11 +111,14 @@ void World::Update(float dt) const
             Body* body = _bodies[i];
             Body* otherBody = _bodies[j];
 
-            ContactInfo contactInfo;
-            if (CollisionDetection::IsColliding(body, otherBody, contactInfo))
+            std::vector<ContactInfo> contacts;
+            if (CollisionDetection::IsColliding(body, otherBody, contacts))
             {
-                penetrations.emplace_back(contactInfo.bodyA, contactInfo.bodyB, contactInfo.start,
-                                          contactInfo.end, contactInfo.normal);
+                for (ContactInfo& contactInfo : contacts)
+                {
+                    penetrations.emplace_back(contactInfo.bodyA, contactInfo.bodyB, contactInfo.start,
+                                              contactInfo.end, contactInfo.normal);
+                }
             }
         }
     }
@@ -138,7 +141,7 @@ void World::Update(float dt) const
         {
             penetration.Solve();
         }
-        
+
         for (auto& constraint : _constraints)
         {
             constraint->Solve();
@@ -160,8 +163,4 @@ void World::Update(float dt) const
     {
         body->IntegrateVelocities(dt);
     }
-}
-
-void World::CheckCollisions() const
-{
 }

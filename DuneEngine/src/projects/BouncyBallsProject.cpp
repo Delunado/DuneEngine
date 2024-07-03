@@ -87,8 +87,6 @@ void BouncyBallsProject::FixedUpdate(float dt)
         body->IntegrateVelocities(dt);
     }
 
-    ContactInfo contactInfo;
-
     for (int i = 0; i <= _bodies.size() - 1; i++)
     {
         for (int j = i + 1; j < _bodies.size(); j++)
@@ -99,13 +97,17 @@ void BouncyBallsProject::FixedUpdate(float dt)
             body->isColliding = false;
             otherBody->isColliding = false;
 
-            if (CollisionDetection::IsColliding(body, otherBody, contactInfo))
+            std::vector<ContactInfo> contacts;
+            if (CollisionDetection::IsColliding(body, otherBody, contacts))
             {
-                CollisionResolution::ResolveCollision(contactInfo);
+                for (ContactInfo& contactInfo : contacts)
+                {
+                    CollisionResolution::ResolveCollision(contactInfo);
 
-                _contactInfo = contactInfo;
-                body->isColliding = true;
-                otherBody->isColliding = true;
+                    _contactInfo = contactInfo;
+                    body->isColliding = true;
+                    otherBody->isColliding = true;
+                }
             }
         }
     }

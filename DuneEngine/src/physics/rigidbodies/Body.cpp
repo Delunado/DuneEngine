@@ -6,7 +6,6 @@
 #include "../../Config.h"
 
 #include "./shapes/Shape.h"
-#include "shapes/PolygonShape.h"
 
 Body::Body(const Shape& shape, const Vec2& position, float mass)
 {
@@ -90,14 +89,16 @@ void Body::ClearTorque()
 
 void Body::ApplyLinearImpulse(const Vec2& impulse)
 {
-    if (IsStatic()) return;
+    if (IsStatic())
+        return;
 
     velocity += impulse * inverseMass;
 }
 
 void Body::ApplyAngularImpulse(float impulse)
 {
-    if (IsStatic()) return;
+    if (IsStatic())
+        return;
 
     angularVelocity += impulse * inverseMomentOfInertia;
 }

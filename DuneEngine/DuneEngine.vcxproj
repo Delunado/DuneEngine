@@ -397,7 +397,6 @@
     </ClCompile>
     <ClCompile Include="src\physics\rigidbodies\CollisionDetection.cpp" />
     <ClCompile Include="src\physics\rigidbodies\CollisionResolution.cpp" />
-    <ClCompile Include="src\physics\rigidbodies\ContactInfo.cpp" />
     <ClCompile Include="src\physics\rigidbodies\shapes\BoxShape.cpp">
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>

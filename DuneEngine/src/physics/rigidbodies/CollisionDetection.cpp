@@ -1,11 +1,11 @@
 ﻿#include "CollisionDetection.h"
-
+#include "Body.h"
 #include "ContactInfo.h"
 #include "shapes/CircleShape.h"
 #include "shapes/PolygonShape.h"
 #include "shapes/Shape.h"
 
-bool CollisionDetection::IsColliding(Body* bodyA, Body* bodyB, ContactInfo& contactInfo)
+bool CollisionDetection::IsColliding(Body* bodyA, Body* bodyB, std::vector<ContactInfo>& contacts)
 {
     bool aIsCircle = bodyA->shape->GetType() == CIRCLE;
     bool bIsCircle = bodyB->shape->GetType() == CIRCLE;
@@ -14,28 +14,28 @@ bool CollisionDetection::IsColliding(Body* bodyA, Body* bodyB, ContactInfo& cont
 
     if (aIsCircle && bIsCircle)
     {
-        return IsCollidingCircleCircle(bodyA, bodyB, contactInfo);
+        return IsCollidingCircleCircle(bodyA, bodyB, contacts);
     }
 
     if (aIsPolygon && bIsPolygon)
     {
-        return IsCollidingPolygonPolygon(bodyA, bodyB, contactInfo);
+        return IsCollidingPolygonPolygon(bodyA, bodyB, contacts);
     }
 
     if (aIsPolygon && bIsCircle)
     {
-        return IsCollidingPolygonCircle(bodyA, bodyB, contactInfo);
+        return IsCollidingPolygonCircle(bodyA, bodyB, contacts);
     }
 
     if (aIsCircle && bIsPolygon)
     {
-        return IsCollidingPolygonCircle(bodyB, bodyA, contactInfo);
+        return IsCollidingPolygonCircle(bodyB, bodyA, contacts);
     }
 
     return false;
 }
 
-bool CollisionDetection::IsCollidingCircleCircle(Body* bodyA, Body* bodyB, ContactInfo& contactInfo)
+bool CollisionDetection::IsCollidingCircleCircle(Body* bodyA, Body* bodyB, std::vector<ContactInfo>& contacts)
 {
     CircleShape* circleA = dynamic_cast<CircleShape*>(bodyA->shape);
     CircleShape* circleB = dynamic_cast<CircleShape*>(bodyB->shape);
@@ -46,6 +46,8 @@ bool CollisionDetection::IsCollidingCircleCircle(Body* bodyA, Body* bodyB, Conta
     bool isColliding = ab.MagnitudeSquared() <= radiusSum * radiusSum;
 
     if (!isColliding) return false;
+
+    ContactInfo contactInfo;
 
     contactInfo.bodyA = bodyA;
     contactInfo.bodyB = bodyB;
@@ -58,10 +60,12 @@ bool CollisionDetection::IsCollidingCircleCircle(Body* bodyA, Body* bodyB, Conta
 
     contactInfo.depth = (contactInfo.end - contactInfo.start).Magnitude();
 
+    contacts.push_back(contactInfo);
+
     return true;
 }
 
-bool CollisionDetection::IsCollidingPolygonPolygon(Body* bodyA, Body* bodyB, ContactInfo& contactInfo)
+bool CollisionDetection::IsCollidingPolygonPolygon(Body* bodyA, Body* bodyB, std::vector<ContactInfo>& contacts)
 {
     const PolygonShape* polygonA = dynamic_cast<PolygonShape*>(bodyA->shape);
     const PolygonShape* polygonB = dynamic_cast<PolygonShape*>(bodyB->shape);
@@ -81,7 +85,12 @@ bool CollisionDetection::IsCollidingPolygonPolygon(Body* bodyA, Body* bodyB, Con
     if (BAseparation > 0)
         return false;
 
+    // Finding the incident edge
+
+
     // Contact Info
+    ContactInfo contactInfo;
+
     contactInfo.bodyA = bodyA;
     contactInfo.bodyB = bodyB;
 
@@ -100,10 +109,12 @@ bool CollisionDetection::IsCollidingPolygonPolygon(Body* bodyA, Body* bodyB, Con
         contactInfo.end = startPointB;
     }
 
+    contacts.push_back(contactInfo);
+
     return true;
 }
 
-bool CollisionDetection::IsCollidingPolygonCircle(Body* polygon, Body* circle, ContactInfo& contactInfo)
+bool CollisionDetection::IsCollidingPolygonCircle(Body* polygon, Body* circle, std::vector<ContactInfo>& contacts)
 {
     // First we find the nearest edge of the polygon to the circle
     const PolygonShape* polygonShape = dynamic_cast<PolygonShape*>(polygon->shape);
@@ -143,6 +154,8 @@ bool CollisionDetection::IsCollidingPolygonCircle(Body* polygon, Body* circle, C
         }
     }
 
+    ContactInfo contactInfo;
+
     //Now we compute the edges to determine the region of the circle center
     if (!isInside)
     {
@@ -165,6 +178,8 @@ bool CollisionDetection::IsCollidingPolygonCircle(Body* polygon, Body* circle, C
             contactInfo.start = circle->position + (contactInfo.normal * -circleShape->radius);
             contactInfo.end = contactInfo.start + (contactInfo.normal * contactInfo.depth);
 
+            contacts.push_back(contactInfo);
+
             return true;
         }
 
@@ -185,6 +200,8 @@ bool CollisionDetection::IsCollidingPolygonCircle(Body* polygon, Body* circle, C
             contactInfo.start = circle->position + (contactInfo.normal * -circleShape->radius);
             contactInfo.end = contactInfo.start + (contactInfo.normal * contactInfo.depth);
 
+            contacts.push_back(contactInfo);
+
             return true;
         }
 
@@ -200,6 +217,8 @@ bool CollisionDetection::IsCollidingPolygonCircle(Body* polygon, Body* circle, C
         contactInfo.start = circle->position + (contactInfo.normal * -circleShape->radius);
         contactInfo.end = contactInfo.start + (contactInfo.normal * contactInfo.depth);
 
+        contacts.push_back(contactInfo);
+
         return true;
     }
 
@@ -210,6 +229,8 @@ bool CollisionDetection::IsCollidingPolygonCircle(Body* polygon, Body* circle, C
     contactInfo.normal = (minNextVertex - minCurrentVertex).Perpendicular();
     contactInfo.start = circle->position + (contactInfo.normal * -circleShape->radius);
     contactInfo.end = contactInfo.start + (contactInfo.normal * contactInfo.depth);
+
+    contacts.push_back(contactInfo);
 
     return true;
 }

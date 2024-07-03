@@ -44,7 +44,7 @@ void PolygonShape::UpdateVertices(const Vec2& position, float rotation)
     }
 }
 
-float PolygonShape::FindMinSeparation(const PolygonShape& other, Vec2& axis, Vec2& point) const
+float PolygonShape:: FindMinSeparation(const PolygonShape& other, Vec2& axis, Vec2& point) const
 {
     float separation = std::numeric_limits<float>::lowest();
 
