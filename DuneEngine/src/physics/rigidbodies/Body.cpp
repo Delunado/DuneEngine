@@ -20,7 +20,7 @@ Body::Body(const Shape& shape, const Vec2& position, float mass)
     this->angularAcceleration = 0.0f;
     this->netForce = Vec2(0.0f, 0.0f);
     this->netTorque = 0.0f;
-    this->restitution = 1.0f;
+    this->elasticity = 1.0f;
     this->friction = 0.5f;
     this->isColliding = false;
 

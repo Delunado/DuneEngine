@@ -56,7 +56,7 @@ public:
     float netTorque;
 
     // Collision
-    float restitution;
+    float elasticity;
     float friction;
     bool isColliding;
 

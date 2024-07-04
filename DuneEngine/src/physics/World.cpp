@@ -7,7 +7,6 @@
 #include "PenetrationConstraint.h"
 #include "rigidbodies/Body.h"
 #include "rigidbodies/CollisionDetection.h"
-#include "rigidbodies/CollisionResolution.h"
 #include "rigidbodies/ContactInfo.h"
 
 World::World(const Vec2& gravity)
@@ -78,7 +77,7 @@ void World::Update(float dt) const
 
     for (Body* body : _bodies)
     {
-        Vec2 gravityForce = _gravity * body->mass * PIXELS_PER_METER;
+        Vec2 gravityForce = _gravity * body->mass;
         body->AddForce(gravityForce);
 
         for (Vec2 force : _forces)
@@ -88,12 +87,12 @@ void World::Update(float dt) const
 
         for (Vec2 impulse : _impulses)
         {
-            body->ApplyLinearImpulse(impulse * body->mass * PIXELS_PER_METER);
+            body->ApplyLinearImpulse(impulse * body->mass);
         }
 
         for (float torque : _torques)
         {
-            body->AddTorque(torque * PIXELS_PER_METER);
+            body->AddTorque(torque);
         }
     }
 
@@ -135,7 +134,7 @@ void World::Update(float dt) const
     }
 
     // Solve all constraints, will modify velocities
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 6; i++)
     {
         for (auto& penetration : penetrations)
         {

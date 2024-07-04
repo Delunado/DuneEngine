@@ -28,7 +28,7 @@ void CollisionResolution::ResolveCollision(ContactInfo& contactInfo)
     Body* bodyA = contactInfo.bodyA;
     Body* bodyB = contactInfo.bodyB;
 
-    float elasticCoefficient = std::min(bodyA->restitution, bodyB->restitution);
+    float elasticCoefficient = std::min(bodyA->elasticity, bodyB->elasticity);
     float frictionCoefficient = std::min(bodyA->friction, bodyB->friction);
 
     //Here we calculate the relative velocity of the two bodies at the point of contact,

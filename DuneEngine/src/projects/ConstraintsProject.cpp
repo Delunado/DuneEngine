@@ -18,12 +18,12 @@ ConstraintsProject::ConstraintsProject()
 
 void ConstraintsProject::Setup()
 {
-    _world = new World(Vec2(0.0f, -9.8f));
+    _world = new World(Vec2(0.0f, -9.8f * PIXELS_PER_METER));
 
     float centerX = WINDOW_WIDTH / 2.0f;
     float centerY = WINDOW_HEIGHT / 2.0f;
 
-    const int NUM_BODIES = 5;
+    const int NUM_BODIES = 8;
     for (int i = 0; i < NUM_BODIES; i++)
     {
         float mass = (i == 0) ? 0.0f : 1.0f;
@@ -42,22 +42,22 @@ void ConstraintsProject::Setup()
 
     // Create a static floor
     Body* floor = new Body(BoxShape(WINDOW_WIDTH, 50.0f), Vec2(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT - 35.0f), 0.0f);
-    floor->restitution = 0.2f;
+    floor->elasticity = 0.2f;
     _world->AddBody(floor);
 
     // Create a static wall on the left
     Body* wallLeft = new Body(BoxShape(50.0f, WINDOW_HEIGHT - 115), Vec2(25.0f, WINDOW_HEIGHT / 2.02f), 0.0f);
-    wallLeft->restitution = 0.9f;
+    wallLeft->elasticity = 0.9f;
     _world->AddBody(wallLeft);
 
     Body* wallRight = new Body(BoxShape(50.0f, WINDOW_HEIGHT - 115), Vec2(WINDOW_WIDTH - 25.0f, WINDOW_HEIGHT / 2.02f),
                                0.0f);
-    wallRight->restitution = 0.9f;
+    wallRight->elasticity = 0.9f;
     _world->AddBody(wallRight);
 
     // Create a static ceiling
     Body* ceiling = new Body(BoxShape(WINDOW_WIDTH, 50.0f), Vec2(WINDOW_WIDTH / 2.0f, 25.0f), 0.0f);
-    ceiling->restitution = 0.7f;
+    ceiling->elasticity = 0.7f;
     _world->AddBody(ceiling);
 }
 
@@ -90,7 +90,7 @@ void ConstraintsProject::Input()
     {
         // Create a ball
         Body* circle = new Body(CircleShape(GetRandomValue(15, 30)), Vec2(mousePosition.x, mousePosition.y), 5.0f);
-        circle->restitution = 0.9f;
+        circle->elasticity = 0.9f;
         circle->friction = 0.15f;
 
         Texture2D* texture = new Texture2D(LoadTexture("assets/face.png"));
@@ -106,8 +106,9 @@ void ConstraintsProject::Input()
         float height = GetRandomValue(75, 75);
 
         Body* box = new Body(BoxShape(width, height), Vec2(mousePosition.x, mousePosition.y), 5.0f);
-        box->rotation = GetRandomValue(0, PI * 2.0f);
+        //box->rotation = GetRandomValue(0, PI * 2.0f);
         box->friction = 0.3f;
+        box->elasticity = 0.1f;
         _world->AddBody(box);
     }
 }

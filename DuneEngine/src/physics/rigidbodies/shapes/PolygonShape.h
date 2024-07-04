@@ -23,7 +23,10 @@ public:
      * @param rotation The rotation of the body.
      */
     void UpdateVertices(const Vec2& position, float rotation) override;
-    float FindMinSeparation(const PolygonShape& other, Vec2& axis, Vec2& point) const;
+    float FindMinSeparation(const PolygonShape& other, int& indexReferenceEdge, Vec2& supportPoint) const;
+    int FindIncidentEdge(const Vec2& normal) const;
+    int ClipSegmentToLine(const std::vector<Vec2>& contactsIn, std::vector<Vec2>& contactsOut,
+                          const Vec2& clippingEdge0, const Vec2& clippingEdge1) const;
 
     PolygonShape* Clone() const override;
 

@@ -21,7 +21,7 @@ void BouncyBallsProject::Setup()
 {
     Body* circle5 = new Body(CircleShape(120.0f), Vec2(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT - 130), 0);
     _bodies.push_back(circle5);
-    circle5->restitution = 1.0f;
+    circle5->elasticity = 1.0f;
 
     /*Body* circle1 = new Body(CircleShape(20.0f), Vec2(100.0f, 100.0f), 2.0f * 2.0f);
     _bodies.push_back(circle1);

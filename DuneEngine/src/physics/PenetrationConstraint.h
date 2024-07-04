@@ -20,7 +20,7 @@ private:
     VecN _cachedLambda;
 
     float _bias;
-    float _beta = 0.2f;
+    float _beta = 0.8f;
 
     Vec2 _collisionPointA; // Local collision point on body A
     Vec2 _collisionPointB; // Local collision point on body B

@@ -67,49 +67,95 @@ bool CollisionDetection::IsCollidingCircleCircle(Body* bodyA, Body* bodyB, std::
 
 bool CollisionDetection::IsCollidingPolygonPolygon(Body* bodyA, Body* bodyB, std::vector<ContactInfo>& contacts)
 {
-    const PolygonShape* polygonA = dynamic_cast<PolygonShape*>(bodyA->shape);
-    const PolygonShape* polygonB = dynamic_cast<PolygonShape*>(bodyB->shape);
+    PolygonShape* polygonA = dynamic_cast<PolygonShape*>(bodyA->shape);
+    PolygonShape* polygonB = dynamic_cast<PolygonShape*>(bodyB->shape);
 
-    Vec2 edgeA;
-    Vec2 edgeB;
-    Vec2 startPointA;
-    Vec2 startPointB;
+    int indexReferenceEdgeA;
+    Vec2 supportPointA;
 
-    const float ABseparation = polygonA->FindMinSeparation(*polygonB, edgeA, startPointA);
+    int indexReferenceEdgeB;
+    Vec2 supportPointB;
+
+    const float ABseparation = polygonA->FindMinSeparation(*polygonB, indexReferenceEdgeA, supportPointA);
 
     if (ABseparation > 0)
         return false;
 
-    const float BAseparation = polygonB->FindMinSeparation(*polygonA, edgeB, startPointB);
+    const float BAseparation = polygonB->FindMinSeparation(*polygonA, indexReferenceEdgeB, supportPointB);
 
     if (BAseparation > 0)
         return false;
 
-    // Finding the incident edge
-
-
-    // Contact Info
-    ContactInfo contactInfo;
-
-    contactInfo.bodyA = bodyA;
-    contactInfo.bodyB = bodyB;
+    // Setting the reference and incident based on the bigger separation
+    PolygonShape* referencePolygon;
+    PolygonShape* incidentPolygon;
+    int indexReferenceEdge;
 
     if (ABseparation > BAseparation)
     {
-        contactInfo.depth = -ABseparation;
-        contactInfo.normal = edgeA.Perpendicular();
-        contactInfo.start = startPointA;
-        contactInfo.end = startPointA + contactInfo.normal * contactInfo.depth;
+        referencePolygon = polygonA;
+        incidentPolygon = polygonB;
+        indexReferenceEdge = indexReferenceEdgeA;
     }
     else
     {
-        contactInfo.depth = -BAseparation;
-        contactInfo.normal = -edgeB.Perpendicular();
-        contactInfo.start = startPointB - contactInfo.normal * contactInfo.depth;
-        contactInfo.end = startPointB;
+        referencePolygon = polygonB;
+        incidentPolygon = polygonA;
+        indexReferenceEdge = indexReferenceEdgeB;
     }
 
-    contacts.push_back(contactInfo);
+    // Finding the reference edge
+    Vec2 referenceEdge = referencePolygon->EdgeAt(indexReferenceEdge);
+
+    // Doing clipping
+    int incidentIndex = incidentPolygon->FindIncidentEdge(referenceEdge.Perpendicular());
+    int incidentIndexNext = (incidentIndex + 1) % incidentPolygon->worldVertices.size();
+    Vec2 vertexIncident = incidentPolygon->worldVertices[incidentIndex];
+    Vec2 vertexIncidentNext = incidentPolygon->worldVertices[incidentIndexNext];
+
+    std::vector<Vec2> contactPoints = {vertexIncident, vertexIncidentNext};
+    std::vector<Vec2> clippedPoints = contactPoints;
+
+    for (int i = 0; i < referencePolygon->worldVertices.size(); i++)
+    {
+        if (i == indexReferenceEdge)
+            continue;
+
+        Vec2 clippingEdge0 = referencePolygon->worldVertices[i];
+        Vec2 clippingEdge1 = referencePolygon->worldVertices[(i + 1) % referencePolygon->worldVertices.size()];
+        int numberOfClippedPoints = referencePolygon->
+            ClipSegmentToLine(contactPoints, clippedPoints, clippingEdge0, clippingEdge1);
+
+        if (numberOfClippedPoints < 2)
+            break;
+
+        contactPoints = clippedPoints;
+    }
+
+    // Loop all clipped pints, only considering the ones with negative separation (penetrating ones)
+    Vec2 vertexReference = referencePolygon->worldVertices[indexReferenceEdge];
+
+    for (Vec2 vertexClip : clippedPoints)
+    {
+        float separation = (vertexClip - vertexReference).Dot(referenceEdge.Perpendicular());
+        if (separation <= 0)
+        {
+            ContactInfo contactInfo;
+            contactInfo.bodyA = bodyA;
+            contactInfo.bodyB = bodyB;
+            contactInfo.normal = referenceEdge.Perpendicular();
+            contactInfo.start = vertexClip;
+            contactInfo.end = vertexClip + contactInfo.normal * -separation;
+
+            if (BAseparation >= ABseparation)
+            {
+                std::swap(contactInfo.start, contactInfo.end); //Start points are always from A to B
+                contactInfo.normal *= -1.0f;
+            }
+
+            contacts.push_back(contactInfo);
+        }
+    }
 
     return true;
 }

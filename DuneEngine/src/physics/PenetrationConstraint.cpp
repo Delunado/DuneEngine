@@ -83,7 +83,7 @@ void PenetrationConstraint::PreSolve(const float dt)
     Vec2 vB = _bodyB->velocity + Vec2(-_bodyB->angularVelocity * rB.y, _bodyB->angularVelocity * rB.x);
     float vRelativeDotNormal = (vB - vA).Dot(normal);
 
-    float elasticity = std::min(_bodyA->restitution, _bodyB->restitution);
+    float elasticity = std::min(_bodyA->elasticity, _bodyB->elasticity);
 
     float C = (positionB - positionA).Dot(-normal);
     C = std::max(0.0f, C + 0.01f);
@@ -104,7 +104,7 @@ void PenetrationConstraint::Solve()
 
     MatrixMN leftHandSide = _jacobian * inverseMassMatrix * jacobianTranspose;
 
-    VecN lambda = MatrixMN::SolveGaussSeidel(leftHandSide, rightHandSide, 8);
+    VecN lambda = MatrixMN::SolveGaussSeidel(leftHandSide, rightHandSide, 12);
 
     // Clamp lambda to avoid penetration
     VecN oldLambda = _cachedLambda;
