@@ -5,8 +5,10 @@
 
 #include "Force.h"
 #include "PenetrationConstraint.h"
+#include "../render/DUDraw.h"
 #include "rigidbodies/Body.h"
 #include "rigidbodies/CollisionDetection.h"
+#include "rigidbodies/CollisionResolution.h"
 #include "rigidbodies/ContactInfo.h"
 
 World::World(const Vec2& gravity)
@@ -68,12 +70,12 @@ void World::AddTorque(float torque)
     _torques.push_back(torque);
 }
 
-void World::Update(float dt) const
+void World::Update(float dt)
 {
     if (_bodies.empty()) return;
 
     // Temporary, this is for resolving penetration constraints this frame
-    std::vector<PenetrationConstraint> penetrations;
+    _penetrationConstraints.clear();
 
     for (Body* body : _bodies)
     {
@@ -115,35 +117,36 @@ void World::Update(float dt) const
             {
                 for (ContactInfo& contactInfo : contacts)
                 {
-                    penetrations.emplace_back(contactInfo.bodyA, contactInfo.bodyB, contactInfo.start,
-                                              contactInfo.end, contactInfo.normal);
+                    _penetrationConstraints.emplace_back(contactInfo.bodyA, contactInfo.bodyB, contactInfo.start,
+                                                         contactInfo.end, contactInfo.normal);
                 }
             }
         }
     }
 
+    float subStepsDetalTime = dt / 6.0f;
     // Pre-solve all constraints, using cached lambda
     for (auto& constraint : _constraints)
     {
-        constraint->PreSolve(dt);
+        constraint->PreSolve(subStepsDetalTime);
     }
 
-    for (auto& penetration : penetrations)
+    for (auto& penetration : _penetrationConstraints)
     {
-        penetration.PreSolve(dt);
+        penetration.PreSolve(subStepsDetalTime);
     }
 
     // Solve all constraints, will modify velocities
     for (int i = 0; i < 6; i++)
     {
-        for (auto& penetration : penetrations)
-        {
-            penetration.Solve();
-        }
-
         for (auto& constraint : _constraints)
         {
             constraint->Solve();
+        }
+
+        for (auto& penetration : _penetrationConstraints)
+        {
+            penetration.Solve();
         }
     }
 
@@ -152,7 +155,7 @@ void World::Update(float dt) const
         constraint->PostSolve();
     }
 
-    for (auto& penetration : penetrations)
+    for (auto& penetration : _penetrationConstraints)
     {
         penetration.PostSolve();
     }
@@ -161,5 +164,20 @@ void World::Update(float dt) const
     for (Body* body : _bodies)
     {
         body->IntegrateVelocities(dt);
+    }
+}
+
+void World::DrawDebug() const
+{
+    // Draw all penetration constraints info
+    for (const PenetrationConstraint& penetration : _penetrationConstraints)
+    {
+        Vec2 positionA = penetration._bodyA->LocalToWorldSpace(penetration._collisionPointA);
+        Vec2 positionB = penetration._bodyB->LocalToWorldSpace(penetration._collisionPointB);
+        Vec2 normal = penetration._bodyA->LocalToWorldSpace(penetration._normal).Normal();
+
+        DrawCircle(positionA.x, positionA.y, 2.0f, RED);
+        DrawCircle(positionB.x, positionB.y, 2.0f, RED);
+        DrawLine(positionA.x, positionA.y, positionA.x + normal.x * 10.0f, positionA.y + normal.y * 10.0f, RED);
     }
 }

@@ -16,12 +16,6 @@ public:
 
     Vec2 EdgeAt(int index) const;
 
-    /**
-     * @brief Updates the vertices of the shape from local space to world space.
-     * 
-     * @param position The position of the body.
-     * @param rotation The rotation of the body.
-     */
     void UpdateVertices(const Vec2& position, float rotation) override;
     float FindMinSeparation(const PolygonShape& other, int& indexReferenceEdge, Vec2& supportPoint) const;
     int FindIncidentEdge(const Vec2& normal) const;
@@ -32,4 +26,7 @@ public:
 
     std::vector<Vec2> localVertices;
     std::vector<Vec2> worldVertices;
+
+private:
+    float _momentOfInertia;
 };

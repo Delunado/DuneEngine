@@ -35,7 +35,7 @@ void PenetrationConstraint::PreSolve(const float dt)
 
     const Vec2 positionA = _bodyA->LocalToWorldSpace(_collisionPointA);
     const Vec2 positionB = _bodyB->LocalToWorldSpace(_collisionPointB);
-    Vec2 normal = _bodyA->LocalToWorldSpace(_normal).Normal();
+    Vec2 normal = _bodyA->LocalToWorldSpace(_normal);
 
     const Vec2 rA = positionA - _bodyA->position;
     const Vec2 rB = positionB - _bodyB->position;
@@ -85,9 +85,12 @@ void PenetrationConstraint::PreSolve(const float dt)
 
     float elasticity = std::min(_bodyA->elasticity, _bodyB->elasticity);
 
-    float C = (positionB - positionA).Dot(-normal);
-    C = std::max(0.0f, C + 0.01f);
-    _bias = (_beta / dt) * C + (elasticity * vRelativeDotNormal);
+    float penetrationDepth = (positionB - positionA).Dot(-normal);
+    penetrationDepth = std::max(0.0f, penetrationDepth);
+
+    const float slop = 0.01f;
+
+    _bias = (_beta / dt) * std::max(0.0f, penetrationDepth - slop) + elasticity * vRelativeDotNormal;
 }
 
 void PenetrationConstraint::Solve()
@@ -99,12 +102,13 @@ void PenetrationConstraint::Solve()
     // Then we calculate lambda (impulse magnitude)
     const MatrixMN jacobianTranspose = _jacobian.Transpose();
 
+    MatrixMN leftHandSide = _jacobian * inverseMassMatrix * jacobianTranspose;
+
     VecN rightHandSide = _jacobian * velocities * -1.0f;
     rightHandSide[0] -= _bias;
 
-    MatrixMN leftHandSide = _jacobian * inverseMassMatrix * jacobianTranspose;
-
-    VecN lambda = MatrixMN::SolveGaussSeidel(leftHandSide, rightHandSide, 12);
+    VecN lambda = MatrixMN::SolveGaussSeidel(leftHandSide, rightHandSide, 24);
+    lambda *= 1.5f;
 
     // Clamp lambda to avoid penetration
     VecN oldLambda = _cachedLambda;

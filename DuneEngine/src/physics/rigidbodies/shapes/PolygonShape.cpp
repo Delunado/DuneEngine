@@ -3,7 +3,7 @@
 #include <iostream>
 #include <ostream>
 
-PolygonShape::PolygonShape(const std::vector<Vec2>& vertices)
+PolygonShape::PolygonShape(const std::vector<Vec2>& vertices): _momentOfInertia(0.0f)
 {
     std::cout << "PolygonShape created" << std::endl;
 
@@ -23,7 +23,19 @@ ShapeType PolygonShape::GetType() const
 
 float PolygonShape::GetMomentOfInertia() const
 {
-    return 4000.0f;
+    float acc0 = 0.0f;
+    float acc1 = 0.0f;
+
+    for (int i = 0; i < localVertices.size(); i++)
+    {
+        Vec2 a = localVertices[i];
+        Vec2 b = localVertices[(i + 1) % localVertices.size()];
+        float cross = abs(a.Cross(b));
+        acc0 += cross * (a.Dot(a) + a.Dot(b) + b.Dot(b));
+        acc1 += cross;
+    }
+
+    return acc0 / 6 / acc1;
 }
 
 Vec2 PolygonShape::EdgeAt(int index) const
@@ -118,7 +130,7 @@ int PolygonShape::ClipSegmentToLine(const std::vector<Vec2>& contactsIn, std::ve
     if (distance0 * distance1 < 0)
     {
         float totalDistance = distance0 - distance1;
-        
+
         // we find the collision point using linear interpolation
         float t = distance0 / totalDistance;
         Vec2 contact = contactsIn[0] + (contactsIn[1] - contactsIn[0]) * t;

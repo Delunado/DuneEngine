@@ -13,6 +13,11 @@ public:
     void Solve() override;
     void PostSolve() override;
 
+    Vec2 _collisionPointA; // Local collision point on body A
+    Vec2 _collisionPointB; // Local collision point on body B
+    Vec2 _normal;
+    float _friction;
+
 private:
     void ApplyImpulses(const VecN& lambda) const;
 
@@ -21,9 +26,4 @@ private:
 
     float _bias;
     float _beta = 0.8f;
-
-    Vec2 _collisionPointA; // Local collision point on body A
-    Vec2 _collisionPointB; // Local collision point on body B
-    Vec2 _normal;
-    float _friction;
 };

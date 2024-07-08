@@ -12,9 +12,7 @@
 #include "../physics/rigidbodies/shapes/BoxShape.h"
 #include "../render/DUDraw.h"
 
-ConstraintsProject::ConstraintsProject()
-{
-}
+ConstraintsProject::ConstraintsProject() = default;
 
 void ConstraintsProject::Setup()
 {
@@ -23,22 +21,31 @@ void ConstraintsProject::Setup()
     float centerX = WINDOW_WIDTH / 2.0f;
     float centerY = WINDOW_HEIGHT / 2.0f;
 
-    const int NUM_BODIES = 8;
-    for (int i = 0; i < NUM_BODIES; i++)
-    {
-        float mass = (i == 0) ? 0.0f : 1.0f;
-        Body* body = new Body(BoxShape(30.0f, 30.0f), Vec2(centerX - i * 40.0f, centerY - 100), mass);
-        _world->AddBody(body);
-        _lastJointBody = body;
-    }
+    // const int NUM_BODIES = 8;
+    // for (int i = 0; i < NUM_BODIES; i++)
+    // {
+    //     float mass = (i == 0) ? 0.0f : 1.0f;
+    //     Body* body = new Body(BoxShape(30.0f, 30.0f), Vec2(centerX - i * 40.0f, centerY - 100), mass);
+    //     _world->AddBody(body);
+    //     _lastJointBody = body;
+    // }
+    //
+    // for (int i = 0; i < NUM_BODIES - 1; i++)
+    // {
+    //     Body* a = _world->GetBodies()[i];
+    //     Body* b = _world->GetBodies()[i + 1];
+    //     JointConstraint* joint = new JointConstraint(a, b, a->position);
+    //     _world->AddConstraint(joint);
+    // }
 
-    for (int i = 0; i < NUM_BODIES - 1; i++)
-    {
-        Body* a = _world->GetBodies()[i];
-        Body* b = _world->GetBodies()[i + 1];
-        JointConstraint* joint = new JointConstraint(a, b, a->position);
-        _world->AddConstraint(joint);
-    }
+    // Create a diamond shape
+    Body* diamond = new Body(
+        PolygonShape({
+            Vec2(0.0f, -65.0f), Vec2(70.0f, 0.0f), Vec2(0.0f, 34.0f), Vec2(-70.0f, 0.0f), Vec2(-12.0f, -65.0f)
+        }),
+        Vec2(centerX, centerY), 1.0f);
+    diamond->elasticity = 0.2f;
+    _world->AddBody(diamond);
 
     // Create a static floor
     Body* floor = new Body(BoxShape(WINDOW_WIDTH, 50.0f), Vec2(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT - 35.0f), 0.0f);
@@ -166,6 +173,8 @@ void ConstraintsProject::Render()
             }
         }
     }
+
+    _world->DrawDebug();
 }
 
 void ConstraintsProject::Cleanup()
