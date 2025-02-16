@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuneEngine", "DuneEngine\DuneEngine.vcxproj", "{FB23DC8A-BDEE-4742-962B-EC59AD744D05}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuneEngine", "DuneEngine\DuneEngine.vcxproj", "{FB7F4529-B4FB-48C0-9FE1-176BD8FB3B2F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,13 +10,13 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FB23DC8A-BDEE-4742-962B-EC59AD744D05}.Debug|Win32.ActiveCfg = Debug|Win32
-		{FB23DC8A-BDEE-4742-962B-EC59AD744D05}.Debug|Win32.Build.0 = Debug|Win32
-		{FB23DC8A-BDEE-4742-962B-EC59AD744D05}.Debug|x64.ActiveCfg = Debug|x64
-		{FB23DC8A-BDEE-4742-962B-EC59AD744D05}.Debug|x64.Build.0 = Debug|x64
-		{FB23DC8A-BDEE-4742-962B-EC59AD744D05}.Release|Win32.ActiveCfg = Release|Win32
-		{FB23DC8A-BDEE-4742-962B-EC59AD744D05}.Release|Win32.Build.0 = Release|Win32
-		{FB23DC8A-BDEE-4742-962B-EC59AD744D05}.Release|x64.ActiveCfg = Release|x64
-		{FB23DC8A-BDEE-4742-962B-EC59AD744D05}.Release|x64.Build.0 = Release|x64
+		{FB7F4529-B4FB-48C0-9FE1-176BD8FB3B2F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FB7F4529-B4FB-48C0-9FE1-176BD8FB3B2F}.Debug|Win32.Build.0 = Debug|Win32
+		{FB7F4529-B4FB-48C0-9FE1-176BD8FB3B2F}.Debug|x64.ActiveCfg = Debug|x64
+		{FB7F4529-B4FB-48C0-9FE1-176BD8FB3B2F}.Debug|x64.Build.0 = Debug|x64
+		{FB7F4529-B4FB-48C0-9FE1-176BD8FB3B2F}.Release|Win32.ActiveCfg = Release|Win32
+		{FB7F4529-B4FB-48C0-9FE1-176BD8FB3B2F}.Release|Win32.Build.0 = Release|Win32
+		{FB7F4529-B4FB-48C0-9FE1-176BD8FB3B2F}.Release|x64.ActiveCfg = Release|x64
+		{FB7F4529-B4FB-48C0-9FE1-176BD8FB3B2F}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 EndGlobal
