@@ -39,3 +39,37 @@
 /x32
 /DuneEngine/x64/
 /DuneEngine/x32/
+
+# CMake Build Directories
+/build/
+*/CMakeFiles/
+*/CMakeCache.txt
+*/cmake_install.cmake
+*/Makefile
+*/build.ninja
+*/.ninja_deps
+*/.ninja_log
+
+# CLion Specific Files
+.idea/
+*.iml
+
+# Executables and Libraries
+/bin/
+*/bin/**/*.exe
+*/bin/**/*.dll
+*/bin/**/*.so
+*/bin/**/*.dylib
+*/lib/
+*.a
+*.lib
+
+# Logs and Debug Files
+*.log
+*.obj
+*.pdb
+*.ilk
+*.sdf
+*.vcxproj*
+*.vs/
+Testing/
