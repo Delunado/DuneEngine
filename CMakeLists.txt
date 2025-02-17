@@ -19,6 +19,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib/${ARCH_DIR}/${CMAKE_B
 # Define dependency paths
 include_directories(include
         external/glm
+        external/imgui
         external/SDL2/include
         external/SDL2_mixer/include)
 
