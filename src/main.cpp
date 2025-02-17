@@ -1,7 +1,9 @@
 #include <iostream>
+#include "SDL.h"
+#include <SDL_mixer.h>
+#include <vec2.hpp>
 
 int main(int argc, char* argv[])
 {
-    std::cout << "Hello, World!" << std::endl;
     return 0;
 }
