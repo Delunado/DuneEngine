@@ -1,9 +1,14 @@
 #include <iostream>
-#include "SDL.h"
-#include <SDL_mixer.h>
-#include <vec2.hpp>
 
-int main(int argc, char* argv[])
-{
+#include "Game.h"
+#include "SDL.h"
+
+int main(int argc, char *argv[]) {
+    Game game;
+
+    game.Initialize();
+    game.Run();
+    game.Clean();
+
     return 0;
 }
