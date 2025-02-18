@@ -1,5 +1,6 @@
 ﻿#ifndef GAME_H
 #define GAME_H
+#include <SDL.h>
 
 class Game {
 public:
@@ -14,6 +15,11 @@ public:
     void Clean();
 
 private:
+    SDL_Window *_window;
+    SDL_Renderer *_renderer;
+
+    bool _isRunning;
+
     void ProcessInput();
 
     void Update();
