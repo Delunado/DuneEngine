@@ -20,6 +20,9 @@ private:
 
     bool _isRunning;
 
+    int _windowWidth = 800;
+    int _windowHeight = 600;
+
     void ProcessInput();
 
     void Update();

@@ -18,8 +18,8 @@ void Game::Initialize() {
         "Dune Engine",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        800,
-        600,
+        _windowWidth,
+        _windowHeight,
         0);
 
     if (!_window) {
@@ -37,6 +37,7 @@ void Game::Initialize() {
         return;
     }
 
+    SDL_SetWindowFullscreen(_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     _isRunning = true;
 }
 
