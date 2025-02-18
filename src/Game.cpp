@@ -66,6 +66,10 @@ void Game::ProcessInput() {
             case SDL_QUIT:
                 _isRunning = false;
                 break;
+            case SDL_KEYDOWN:
+                if (sdlEvent.key.keysym.sym == SDLK_ESCAPE)
+                    _isRunning = false;
+                break;
         }
     };
 }
