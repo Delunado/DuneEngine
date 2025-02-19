@@ -1,6 +1,7 @@
 ﻿#include "Game.h"
 
 #include <iostream>
+#include <SDL_image.h>
 
 Game::Game() {
 }
@@ -34,6 +35,11 @@ void Game::Initialize() {
 
     if (!_renderer) {
         std::cerr << "Error creating SDL renderer." << std::endl;
+        return;
+    }
+
+    if (IMG_Init(IMG_INIT_PNG) == 0) {
+        std::cerr << "Error initializing SDL_image." << std::endl;
         return;
     }
 
@@ -71,6 +77,7 @@ void Game::ProcessInput() {
             case SDL_QUIT:
                 _isRunning = false;
                 break;
+
             case SDL_KEYDOWN:
                 if (sdlEvent.key.keysym.sym == SDLK_ESCAPE)
                     _isRunning = false;
@@ -86,9 +93,13 @@ void Game::Render() {
     SDL_SetRenderDrawColor(_renderer, 15, 30, 8, 255);
     SDL_RenderClear(_renderer);
 
-    SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
-    SDL_Rect player = {200, 100, 50, 50};
-    SDL_RenderFillRect(_renderer, &player);
+    SDL_Surface *playerSurface = IMG_Load("../../../assets/RockAsteroid.png");
+    SDL_Texture *playerTexture = SDL_CreateTextureFromSurface(_renderer, playerSurface);
+    SDL_FreeSurface(playerSurface);
+
+    SDL_Rect destRect = {100, 100, 64, 64};
+    SDL_RenderCopy(_renderer, playerTexture, nullptr, &destRect);
+    SDL_DestroyTexture(playerTexture);
 
     SDL_RenderPresent(_renderer);
 }
