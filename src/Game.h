@@ -23,6 +23,8 @@ private:
     int _windowWidth = 800;
     int _windowHeight = 600;
 
+    void Setup();
+
     void ProcessInput();
 
     void Update();

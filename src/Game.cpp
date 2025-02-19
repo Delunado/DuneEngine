@@ -41,7 +41,12 @@ void Game::Initialize() {
     _isRunning = true;
 }
 
+void Game::Setup() {
+}
+
 void Game::Run() {
+    Setup();
+
     while (_isRunning) {
         ProcessInput();
         Update();
@@ -57,7 +62,6 @@ void Game::Clean() {
     _renderer = nullptr;
     _window = nullptr;
 }
-
 
 void Game::ProcessInput() {
     SDL_Event sdlEvent;
@@ -81,6 +85,10 @@ void Game::Update() {
 void Game::Render() {
     SDL_SetRenderDrawColor(_renderer, 15, 30, 8, 255);
     SDL_RenderClear(_renderer);
+
+    SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
+    SDL_Rect player = {200, 100, 50, 50};
+    SDL_RenderFillRect(_renderer, &player);
 
     SDL_RenderPresent(_renderer);
 }
