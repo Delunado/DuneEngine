@@ -48,6 +48,8 @@ void Game::Initialize() {
 }
 
 void Game::Setup() {
+    _playerPosition = glm::vec2(100, 100);
+    _playerVelocity = glm::vec2(0.01f, 0);
 }
 
 void Game::Run() {
@@ -87,6 +89,8 @@ void Game::ProcessInput() {
 }
 
 void Game::Update() {
+    _playerPosition.x += _playerVelocity.x;
+    _playerPosition.y += _playerVelocity.y;
 }
 
 void Game::Render() {
@@ -97,7 +101,7 @@ void Game::Render() {
     SDL_Texture *playerTexture = SDL_CreateTextureFromSurface(_renderer, playerSurface);
     SDL_FreeSurface(playerSurface);
 
-    SDL_Rect destRect = {100, 100, 64, 64};
+    SDL_Rect destRect = {static_cast<int>(_playerPosition.x), static_cast<int>(_playerPosition.y), 64, 64};
     SDL_RenderCopy(_renderer, playerTexture, nullptr, &destRect);
     SDL_DestroyTexture(playerTexture);
 
