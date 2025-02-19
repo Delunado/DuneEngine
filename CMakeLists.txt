@@ -21,11 +21,13 @@ include_directories(include
         external/glm
         external/imgui
         external/SDL2/include
-        external/SDL2_mixer/include)
+        external/SDL2_mixer/include
+        external/SDL2_image/include)
 
 link_directories(link
         "external/SDL2/lib/${ARCH_DIR}"
-        "external/SDL2_mixer/lib/${ARCH_DIR}")
+        "external/SDL2_mixer/lib/${ARCH_DIR}"
+        "external/SDL2_image/lib/${ARCH_DIR}")
 
 # Add source files
 file(GLOB_RECURSE ENGINE_SOURCES src/*.cpp)
@@ -35,4 +37,5 @@ add_executable(DuneEngine ${ENGINE_SOURCES})
 target_link_libraries(DuneEngine
         SDL2main
         SDL2
-        SDL2_mixer)
+        SDL2_mixer
+        SDL2_image)
