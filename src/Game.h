@@ -3,6 +3,9 @@
 #include <SDL.h>
 #include <glm.hpp>
 
+const int FPS = 60;
+const int MILLISECONDS_PER_FRAME = 1000 / FPS;
+
 class Game {
 public:
     Game();
@@ -20,6 +23,7 @@ private:
     SDL_Renderer *_renderer;
 
     bool _isRunning;
+    int millisecondsPreviousFrame = 0;
 
     int _windowWidth = 800;
     int _windowHeight = 600;
