@@ -3,6 +3,8 @@
 #include <iostream>
 #include <SDL_image.h>
 
+#include "Logger.h"
+
 Game::Game() {
 }
 
@@ -11,7 +13,7 @@ Game::~Game() {
 
 void Game::Initialize() {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-        std::cerr << "Error initializing SDL." << std::endl;
+        Logger::Error("Error initializing SDL.");
         return;
     }
 
@@ -24,7 +26,7 @@ void Game::Initialize() {
         0);
 
     if (!_window) {
-        std::cerr << "Error creating SDL window." << std::endl;
+        Logger::Error("Error creating SDL window.");
         return;
     }
 
@@ -34,12 +36,12 @@ void Game::Initialize() {
         0);
 
     if (!_renderer) {
-        std::cerr << "Error creating SDL renderer." << std::endl;
+        Logger::Error("Error creating SDL renderer.");
         return;
     }
 
     if (IMG_Init(IMG_INIT_PNG) == 0) {
-        std::cerr << "Error initializing SDL_image." << std::endl;
+        Logger::Error("Error initializing SDL_image.");
         return;
     }
 
@@ -48,6 +50,9 @@ void Game::Initialize() {
 }
 
 void Game::Setup() {
+    Logger::Log("Testing Log");
+    Logger::Error("Testing Error");
+
     _playerPosition = glm::vec2(100, 100);
     _playerVelocity = glm::vec2(20.0f, 0);
 }
