@@ -51,6 +51,7 @@ void Game::Initialize() {
 
 void Game::Setup() {
     Logger::Log("Testing Log");
+    Logger::Warning("Testing Warning");
     Logger::Error("Testing Error");
 
     _playerPosition = glm::vec2(100, 100);
