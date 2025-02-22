@@ -16,7 +16,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${ARCH_DIR}/${CMAKE_B
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib/${ARCH_DIR}/${CMAKE_BUILD_TYPE})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib/${ARCH_DIR}/${CMAKE_BUILD_TYPE})
 
-# Define dependency paths
+# Engine Directories
+include_directories(
+        src/Game
+        src/Logger)
+
+# External Directories
 include_directories(include
         external/glm
         external/imgui
