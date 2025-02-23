@@ -19,7 +19,10 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib/${ARCH_DIR}/${CMAKE_B
 # Engine Directories
 include_directories(
         src/Game
-        src/Logger)
+        src/Logger
+        src/ECS
+        src/Components
+        src/Systems)
 
 # External Directories
 include_directories(include
