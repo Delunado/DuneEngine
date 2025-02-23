@@ -49,12 +49,6 @@ void Game::Initialize() {
 }
 
 void Game::Setup() {
-    Logger::Log("Testing Log");
-    Logger::Warning("Testing Warning");
-    Logger::Error("Testing Error");
-
-    _playerPosition = glm::vec2(100, 100);
-    _playerVelocity = glm::vec2(20.0f, 0);
 }
 
 void Game::Run() {
@@ -101,9 +95,6 @@ void Game::Update() {
     double deltaTime = (SDL_GetTicks() - millisecondsPreviousFrame) / 1000.0;
 
     millisecondsPreviousFrame = SDL_GetTicks();
-
-    _playerPosition.x += _playerVelocity.x * deltaTime;
-    _playerPosition.y += _playerVelocity.y * deltaTime;
 }
 
 void Game::Render() {
