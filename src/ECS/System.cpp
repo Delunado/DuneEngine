@@ -13,7 +13,7 @@ void System::RemoveEntity(const Entity &entity) {
                         _entities.begin(),
                         _entities.end(),
                         [&entity](const Entity &other) {
-                            return other.GetId() == entity.GetId();
+                            return other == entity;
                         }), _entities.end());
 }
 
