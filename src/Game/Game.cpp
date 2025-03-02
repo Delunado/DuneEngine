@@ -1,10 +1,11 @@
 ﻿#include "Game.h"
 
+#include <Registry.h>
 #include <SDL_image.h>
 
 #include "Logger.h"
 
-Game::Game() {
+Game::Game(): _registry(new Registry()) {
 }
 
 Game::~Game() {
@@ -49,6 +50,8 @@ void Game::Initialize() {
 }
 
 void Game::Setup() {
+    Entity player = _registry->CreateEntity();
+    Entity enemy = _registry->CreateEntity();
 }
 
 void Game::Run() {

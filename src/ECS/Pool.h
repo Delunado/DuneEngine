@@ -45,7 +45,7 @@ Pool<T>::Pool(int size) {
 
 template<typename T>
 bool Pool<T>::IsEmpty() const {
-    _data.empty();
+    return _data.empty();
 }
 
 template<typename T>

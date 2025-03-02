@@ -3,6 +3,8 @@
 #include <SDL.h>
 #include <glm.hpp>
 
+class Registry;
+
 const int FPS = 60;
 const int MILLISECONDS_PER_FRAME = 1000 / FPS;
 
@@ -21,6 +23,8 @@ public:
 private:
     SDL_Window *_window;
     SDL_Renderer *_renderer;
+
+    Registry *_registry;
 
     bool _isRunning;
     int millisecondsPreviousFrame = 0;

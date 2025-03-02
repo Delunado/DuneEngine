@@ -3,6 +3,7 @@
 #include <Component.h>
 #include <Definitions.h>
 #include <Entity.h>
+#include <memory>
 #include <set>
 #include <typeindex>
 #include <unordered_map>
@@ -18,6 +19,7 @@ public:
 
     Entity CreateEntity();
 
+    // Components
     template<typename T, typename... TArgs>
     void AddComponent(Entity entity, TArgs &&... args);
 
@@ -30,7 +32,20 @@ public:
     template<typename T>
     T &GetComponent(Entity entity) const;
 
-    void AddEntityToSystem(Entity entity);
+    // Systems
+    template<typename T, typename... TArgs>
+    void AddSystem(TArgs &&... args);
+
+    template<typename T>
+    void RemoveSystem();
+
+    template<typename T>
+    bool HasSystem() const;
+
+    template<typename T>
+    T &GetSystem() const;
+
+    void AddEntityToSystems(Entity entity);
 
     void Update();
 
@@ -86,6 +101,27 @@ bool Registry::HasComponent(const Entity entity) const {
     const auto entityId = entity.GetId();
 
     return _entitySignatures[entityId].test(componentId);
+}
+
+template<typename T, typename... TArgs>
+void Registry::AddSystem(TArgs &&... args) {
+    T *newSystem = new T(std::forward<TArgs>(args)...);
+    _systems.insert(std::make_pair(std::type_index(typeid(T)), newSystem));
+}
+
+template<typename T>
+void Registry::RemoveSystem() {
+    _systems.erase(std::type_index(typeid(T)));
+}
+
+template<typename T>
+bool Registry::HasSystem() const {
+    return _systems.find(std::type_index(typeid(T))) != _systems.end();
+}
+
+template<typename T>
+T &Registry::GetSystem() const {
+    return static_cast<T>(*_systems.at(std::type_index(typeid(T))));
 }
 
 #endif //REGISTRY_H

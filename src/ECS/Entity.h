@@ -9,6 +9,7 @@ public:
 
     bool operator ==(const Entity &other) const;
     bool operator !=(const Entity &other) const;
+    bool operator <(const Entity &other) const;
 
 private:
     int _id;
