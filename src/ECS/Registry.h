@@ -54,9 +54,9 @@ private:
     std::set<Entity> _entitiesToAdd;
     std::set<Entity> _entitiesToRemove;
 
-    std::vector<IPool *> _componentPools;
+    std::vector<std::shared_ptr<IPool> > _componentPools;
     std::vector<Signature> _entitySignatures;
-    std::pmr::unordered_map<std::type_index, System *> _systems;
+    std::pmr::unordered_map<std::type_index, std::shared_ptr<System> > _systems;
 };
 
 template<typename T, typename... TArgs>
@@ -70,11 +70,11 @@ void Registry::AddComponent(const Entity entity, TArgs &&... args) {
     }
 
     if (_componentPools[componentId] == nullptr) {
-        Pool<T> *newPool = new Pool<T>();
+        std::shared_ptr<Pool<T> > newPool = std::make_shared << Pool<T>();
         _componentPools[componentId] = newPool;
     }
 
-    Pool<T> *pool = Pool<T>(_componentPools[componentId]);
+    std::shared_ptr<Pool<T> > pool = std::static_pointer_cast<Pool<T> >(_componentPools[componentId]);
 
     if (entityId >= pool->GetSize()) {
         pool->Resize(_entities);
@@ -105,7 +105,7 @@ bool Registry::HasComponent(const Entity entity) const {
 
 template<typename T, typename... TArgs>
 void Registry::AddSystem(TArgs &&... args) {
-    T *newSystem = new T(std::forward<TArgs>(args)...);
+    std::shared_ptr<T> newSystem = std::make_shared<T>(std::forward<TArgs>(args)...);
     _systems.insert(std::make_pair(std::type_index(typeid(T)), newSystem));
 }
 
@@ -121,7 +121,7 @@ bool Registry::HasSystem() const {
 
 template<typename T>
 T &Registry::GetSystem() const {
-    return static_cast<T>(*_systems.at(std::type_index(typeid(T))));
+    return std::static_pointer_cast<T>(_systems.at(std::type_index(typeid(T))));
 }
 
 #endif //REGISTRY_H

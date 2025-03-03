@@ -5,7 +5,7 @@
 
 #include "Logger.h"
 
-Game::Game(): _registry(new Registry()) {
+Game::Game(): _registry(std::make_unique<Registry>()) {
 }
 
 Game::~Game() {

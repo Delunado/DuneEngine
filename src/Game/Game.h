@@ -2,6 +2,7 @@
 #define GAME_H
 #include <SDL.h>
 #include <glm.hpp>
+#include <memory>
 
 class Registry;
 
@@ -24,7 +25,7 @@ private:
     SDL_Window *_window;
     SDL_Renderer *_renderer;
 
-    Registry *_registry;
+    std::unique_ptr<Registry> _registry;
 
     bool _isRunning;
     int millisecondsPreviousFrame = 0;
