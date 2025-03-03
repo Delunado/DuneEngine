@@ -4,6 +4,8 @@
 #include <SDL_image.h>
 
 #include "MovementSystem.h"
+#include "RenderSystem.h"
+
 #include "TransformComponent.h"
 #include "RigidbodyComponent.h"
 #include "Logger.h"
@@ -54,10 +56,12 @@ void Game::Initialize() {
 
 void Game::Setup() {
     _registry->AddSystem<MovementSystem>();
+    _registry->AddSystem<RenderSystem>();
 
     Entity _player = _registry->CreateEntity();
     _player.AddComponent<TransformComponent>(glm::vec2(0.0f, 0.0f));
-    _player.AddComponent<RigidbodyComponent>(glm::vec2(1.0f, 3.0f));
+    _player.AddComponent<RigidbodyComponent>(glm::vec2(10.0f, 20.0f));
+    _player.AddComponent<SpriteComponent>(64, 64);
 }
 
 void Game::Run() {
@@ -114,15 +118,7 @@ void Game::Render() {
     SDL_SetRenderDrawColor(_renderer, 15, 30, 8, 255);
     SDL_RenderClear(_renderer);
 
-    SDL_Surface *playerSurface = IMG_Load("../../../assets/RockAsteroid.png");
-    SDL_Texture *playerTexture = SDL_CreateTextureFromSurface(_renderer, playerSurface);
-    SDL_FreeSurface(playerSurface);
-
-    glm::vec2 position;//_player->GetComponent<TransformComponent>().position;
-
-    SDL_Rect destRect = {static_cast<int>(position.x), static_cast<int>(position.y), 64, 64};
-    SDL_RenderCopy(_renderer, playerTexture, nullptr, &destRect);
-    SDL_DestroyTexture(playerTexture);
+    _registry->GetSystem<RenderSystem>().Update(_renderer);
 
     SDL_RenderPresent(_renderer);
 }
