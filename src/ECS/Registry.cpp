@@ -7,7 +7,7 @@
 Entity Registry::CreateEntity() {
     int entityId = _entities++;
 
-    auto entity = Entity(entityId);
+    auto entity = Entity(entityId, this);
     _entitiesToAdd.insert(entity);
 
     if (_entities >= _entitySignatures.size()) {
@@ -19,7 +19,7 @@ Entity Registry::CreateEntity() {
     return entity;
 }
 
-void Registry::AddEntityToSystems(const Entity entity) {
+void Registry::AddEntityToSystems(const Entity &entity) {
     const int entityId = entity.GetId();
 
     const auto entitySignature = _entitySignatures[entityId];

@@ -3,6 +3,7 @@
 #include <Component.h>
 #include <Definitions.h>
 #include <Entity.h>
+#include <Logger.h>
 #include <memory>
 #include <set>
 #include <typeindex>
@@ -45,7 +46,7 @@ public:
     template<typename T>
     T &GetSystem() const;
 
-    void AddEntityToSystems(Entity entity);
+    void AddEntityToSystems(const Entity &entity);
 
     void Update();
 
@@ -70,7 +71,7 @@ void Registry::AddComponent(const Entity entity, TArgs &&... args) {
     }
 
     if (_componentPools[componentId] == nullptr) {
-        std::shared_ptr<Pool<T> > newPool = std::make_shared << Pool<T>();
+        std::shared_ptr<Pool<T> > newPool = std::make_shared<Pool<T> >();
         _componentPools[componentId] = newPool;
     }
 
@@ -85,6 +86,8 @@ void Registry::AddComponent(const Entity entity, TArgs &&... args) {
     pool->Set(entityId, newComponent);
 
     _entitySignatures[entityId].set(componentId, true);
+
+    Logger::Log("Added component " + std::to_string(componentId) + " to entity " + std::to_string(entityId));
 }
 
 template<typename T>
@@ -101,6 +104,14 @@ bool Registry::HasComponent(const Entity entity) const {
     const auto entityId = entity.GetId();
 
     return _entitySignatures[entityId].test(componentId);
+}
+
+template<typename T>
+T &Registry::GetComponent(const Entity entity) const {
+    const auto componentId = Component<T>::GetId();
+    const auto entityId = entity.GetId();
+
+    return std::static_pointer_cast<Pool<T> >(_componentPools[componentId])->Get(entityId);
 }
 
 template<typename T, typename... TArgs>
@@ -123,5 +134,7 @@ template<typename T>
 T &Registry::GetSystem() const {
     return std::static_pointer_cast<T>(_systems.at(std::type_index(typeid(T))));
 }
+
+#include "Entity.inl"
 
 #endif //REGISTRY_H

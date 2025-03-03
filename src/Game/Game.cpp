@@ -3,6 +3,8 @@
 #include <Registry.h>
 #include <SDL_image.h>
 
+#include "TransformComponent.h"
+#include "RigidbodyComponent.h"
 #include "Logger.h"
 
 Game::Game(): _registry(std::make_unique<Registry>()) {
@@ -51,7 +53,9 @@ void Game::Initialize() {
 
 void Game::Setup() {
     Entity player = _registry->CreateEntity();
-    Entity enemy = _registry->CreateEntity();
+
+    player.AddComponent<TransformComponent>(glm::vec2(0.0f, 0.0f));
+    player.AddComponent<RigidbodyComponent>(glm::vec2(1.0f, 3.0f));
 }
 
 void Game::Run() {

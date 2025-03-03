@@ -1,6 +1,6 @@
 ﻿#include "Entity.h"
 
-Entity::Entity(const int id): _id(id) {
+Entity::Entity(const int id, Registry *registry): _id(id), _registry(registry) {
 }
 
 int Entity::GetId() const {
