@@ -22,10 +22,11 @@ public:
 
     const Signature &GetSignature() const;
 
-private:
+protected:
     template<typename T>
     void RequireComponent();
 
+private:
     Signature _componentSignature;
 
     std::vector<Entity> _entities;

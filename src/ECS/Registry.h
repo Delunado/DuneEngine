@@ -44,7 +44,7 @@ public:
     bool HasSystem() const;
 
     template<typename T>
-    T &GetSystem() const;
+    T &GetSystem();
 
     void AddEntityToSystems(const Entity &entity);
 
@@ -131,8 +131,9 @@ bool Registry::HasSystem() const {
 }
 
 template<typename T>
-T &Registry::GetSystem() const {
-    return std::static_pointer_cast<T>(_systems.at(std::type_index(typeid(T))));
+T &Registry::GetSystem() {
+    const auto &system = _systems.at(std::type_index(typeid(T)));
+    return *std::static_pointer_cast<T>(system);
 }
 
 #include "Entity.inl"

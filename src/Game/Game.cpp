@@ -3,6 +3,7 @@
 #include <Registry.h>
 #include <SDL_image.h>
 
+#include "MovementSystem.h"
 #include "TransformComponent.h"
 #include "RigidbodyComponent.h"
 #include "Logger.h"
@@ -52,10 +53,11 @@ void Game::Initialize() {
 }
 
 void Game::Setup() {
-    Entity player = _registry->CreateEntity();
+    _registry->AddSystem<MovementSystem>();
 
-    player.AddComponent<TransformComponent>(glm::vec2(0.0f, 0.0f));
-    player.AddComponent<RigidbodyComponent>(glm::vec2(1.0f, 3.0f));
+    Entity _player = _registry->CreateEntity();
+    _player.AddComponent<TransformComponent>(glm::vec2(0.0f, 0.0f));
+    _player.AddComponent<RigidbodyComponent>(glm::vec2(1.0f, 3.0f));
 }
 
 void Game::Run() {
@@ -102,6 +104,10 @@ void Game::Update() {
     double deltaTime = (SDL_GetTicks() - millisecondsPreviousFrame) / 1000.0;
 
     millisecondsPreviousFrame = SDL_GetTicks();
+
+    _registry->GetSystem<MovementSystem>().Update(deltaTime);
+
+    _registry->Update();
 }
 
 void Game::Render() {
@@ -112,7 +118,9 @@ void Game::Render() {
     SDL_Texture *playerTexture = SDL_CreateTextureFromSurface(_renderer, playerSurface);
     SDL_FreeSurface(playerSurface);
 
-    SDL_Rect destRect = {static_cast<int>(_playerPosition.x), static_cast<int>(_playerPosition.y), 64, 64};
+    glm::vec2 position;//_player->GetComponent<TransformComponent>().position;
+
+    SDL_Rect destRect = {static_cast<int>(position.x), static_cast<int>(position.y), 64, 64};
     SDL_RenderCopy(_renderer, playerTexture, nullptr, &destRect);
     SDL_DestroyTexture(playerTexture);
 
