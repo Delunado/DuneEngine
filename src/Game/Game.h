@@ -33,8 +33,8 @@ private:
     bool _isRunning;
     int millisecondsPreviousFrame = 0;
 
-    int _windowWidth = 800;
-    int _windowHeight = 600;
+    int _windowWidth = 1920;
+    int _windowHeight = 1080;
 
     void Setup();
 

@@ -63,12 +63,23 @@ void Game::Setup() {
     _registry->AddSystem<MovementSystem>();
     _registry->AddSystem<RenderSystem>();
 
-    _assetDatabase->AddTexture(_renderer, "RockAsteroid", "RockAsteroid.png");
+    _assetDatabase->AddTexture(_renderer, "RockAsteroid", "tileset.png");
 
-    Entity _player = _registry->CreateEntity();
-    _player.AddComponent<TransformComponent>(glm::vec2(0.0f, 0.0f));
-    _player.AddComponent<RigidbodyComponent>(glm::vec2(10.0f, 20.0f));
-    _player.AddComponent<SpriteComponent>("RockAsteroid", 64, 64);
+    for (int i = 0; i < _windowWidth / 32; i++) {
+        auto _entity = _registry->CreateEntity();
+        _entity.AddComponent<TransformComponent>(glm::vec2(i * 16.0f * 2, _windowHeight - 32),
+                                                 glm::vec2(2.0f, 2.0f));
+        _entity.AddComponent<SpriteComponent>("RockAsteroid", 16, 16, 16 * 8, 16 * 4);
+    }
+
+    //Create moving entities
+    for (int i = 0; i < 10; i++) {
+        auto _entity = _registry->CreateEntity();
+        _entity.AddComponent<TransformComponent>(glm::vec2(i * 10, i * 20),
+                                                 glm::vec2(2.0f, 2.0f));
+        _entity.AddComponent<RigidbodyComponent>(glm::vec2(15.0f * i, 10.0f * i / 2));
+        _entity.AddComponent<SpriteComponent>("RockAsteroid", 16, 16, 16 * 0, 16 * 1);
+    }
 }
 
 void Game::Run() {
@@ -124,7 +135,7 @@ void Game::Update() {
 }
 
 void Game::Render() {
-    SDL_SetRenderDrawColor(_renderer, 15, 30, 8, 255);
+    SDL_SetRenderDrawColor(_renderer, 3, 3, 3, 255);
     SDL_RenderClear(_renderer);
 
     _registry->GetSystem<RenderSystem>().Update(_renderer, _assetDatabase);
