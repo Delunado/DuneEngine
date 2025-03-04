@@ -2,6 +2,7 @@
 
 #include <Logger.h>
 #include <SDL_image.h>
+#include <filesystem>
 
 AssetDatabase::AssetDatabase() {
     Logger::Log("AssetDatabase created");
@@ -12,7 +13,7 @@ AssetDatabase::~AssetDatabase() {
 }
 
 void AssetDatabase::AddTexture(SDL_Renderer *renderer, const std::string &id, const std::string &filePath) {
-    SDL_Surface *surface = IMG_Load(filePath.c_str());
+    SDL_Surface *surface = IMG_Load(GetAssetPath(filePath).c_str());
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
     _textures.emplace(id, texture);
 
@@ -29,4 +30,8 @@ void AssetDatabase::Clear() {
     }
 
     _textures.clear();
+}
+
+std::string AssetDatabase::GetAssetPath(const std::string &filePath) {
+    return "../../../assets/" + filePath;
 }

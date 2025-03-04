@@ -1,5 +1,6 @@
 ﻿#include "Game.h"
 
+#include <filesystem>
 #include <Registry.h>
 #include <SDL_image.h>
 
@@ -13,6 +14,7 @@
 
 Game::Game(): _registry(std::make_unique<Registry>()), _assetDatabase(std::make_unique<AssetDatabase>()) {
     Logger::Log("Game created");
+    Logger::Log(std::filesystem::current_path().string());
 }
 
 Game::~Game() {
@@ -61,7 +63,7 @@ void Game::Setup() {
     _registry->AddSystem<MovementSystem>();
     _registry->AddSystem<RenderSystem>();
 
-    _assetDatabase->AddTexture(_renderer, "RockAsteroid", "D:\\GameDev\\C++\\DuneEngine\\assets\\RockAsteroid.png");
+    _assetDatabase->AddTexture(_renderer, "RockAsteroid", "RockAsteroid.png");
 
     Entity _player = _registry->CreateEntity();
     _player.AddComponent<TransformComponent>(glm::vec2(0.0f, 0.0f));
