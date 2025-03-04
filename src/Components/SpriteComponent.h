@@ -2,11 +2,13 @@
 #define SPRITECOMPONENT_H
 
 struct SpriteComponent {
+    std::string id;
     int width;
     int height;
+    SDL_Rect srcRect;
 
-    SpriteComponent(const int width = 0, const int height = 0)
-        : width(width), height(height) {
+    explicit SpriteComponent(std::string id = "", const int width = 0, const int height = 0)
+        : id(id), width(width), height(height), srcRect({0, 0, width, height}) {
     }
 };
 

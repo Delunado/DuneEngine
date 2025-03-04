@@ -9,11 +9,14 @@
 #include "TransformComponent.h"
 #include "RigidbodyComponent.h"
 #include "Logger.h"
+#include "../Assets/AssetDatabase.h"
 
-Game::Game(): _registry(std::make_unique<Registry>()) {
+Game::Game(): _registry(std::make_unique<Registry>()), _assetDatabase(std::make_unique<AssetDatabase>()) {
+    Logger::Log("Game created");
 }
 
 Game::~Game() {
+    Logger::Log("Game destroyed");
 }
 
 void Game::Initialize() {
@@ -58,10 +61,12 @@ void Game::Setup() {
     _registry->AddSystem<MovementSystem>();
     _registry->AddSystem<RenderSystem>();
 
+    _assetDatabase->AddTexture(_renderer, "RockAsteroid", "D:\\GameDev\\C++\\DuneEngine\\assets\\RockAsteroid.png");
+
     Entity _player = _registry->CreateEntity();
     _player.AddComponent<TransformComponent>(glm::vec2(0.0f, 0.0f));
     _player.AddComponent<RigidbodyComponent>(glm::vec2(10.0f, 20.0f));
-    _player.AddComponent<SpriteComponent>(64, 64);
+    _player.AddComponent<SpriteComponent>("RockAsteroid", 64, 64);
 }
 
 void Game::Run() {
@@ -75,6 +80,8 @@ void Game::Run() {
 }
 
 void Game::Clean() {
+    _assetDatabase->Clear();
+
     SDL_DestroyRenderer(_renderer);
     SDL_DestroyWindow(_window);
     SDL_Quit();
@@ -118,7 +125,7 @@ void Game::Render() {
     SDL_SetRenderDrawColor(_renderer, 15, 30, 8, 255);
     SDL_RenderClear(_renderer);
 
-    _registry->GetSystem<RenderSystem>().Update(_renderer);
+    _registry->GetSystem<RenderSystem>().Update(_renderer, _assetDatabase);
 
     SDL_RenderPresent(_renderer);
 }

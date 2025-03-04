@@ -4,6 +4,14 @@
 #include <Logger.h>
 #include <System.h>
 
+Registry::Registry() {
+    Logger::Log("Registry created");
+}
+
+Registry::~Registry() {
+    Logger::Log("Registry destroyed");
+}
+
 Entity Registry::CreateEntity() {
     int entityId = _entities++;
 

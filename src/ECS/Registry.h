@@ -16,7 +16,8 @@ class System;
 
 class Registry {
 public:
-    Registry() = default;
+    Registry();
+    ~Registry();
 
     Entity CreateEntity();
 
