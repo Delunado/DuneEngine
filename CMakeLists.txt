@@ -26,6 +26,7 @@ include_directories(
 
 # External Directories
 include_directories(include
+        external/json
         external/glm
         external/imgui
         external/SDL2/include

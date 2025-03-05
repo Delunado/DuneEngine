@@ -10,6 +10,7 @@
 #include "TransformComponent.h"
 #include "RigidbodyComponent.h"
 #include "Logger.h"
+#include "../Tilemap.h"
 #include "../Assets/AssetDatabase.h"
 
 Game::Game(): _registry(std::make_unique<Registry>()), _assetDatabase(std::make_unique<AssetDatabase>()) {
@@ -63,23 +64,33 @@ void Game::Setup() {
     _registry->AddSystem<MovementSystem>();
     _registry->AddSystem<RenderSystem>();
 
-    _assetDatabase->AddTexture(_renderer, "RockAsteroid", "tileset.png");
+    _assetDatabase->AddTexture(_renderer, "Tilemap", "tileset.png");
 
-    for (int i = 0; i < _windowWidth / 32; i++) {
-        auto _entity = _registry->CreateEntity();
-        _entity.AddComponent<TransformComponent>(glm::vec2(i * 16.0f * 2, _windowHeight - 32),
-                                                 glm::vec2(2.0f, 2.0f));
-        _entity.AddComponent<SpriteComponent>("RockAsteroid", 16, 16, 16 * 8, 16 * 4);
+    Tilemap tilemap = Tilemap();
+    tilemap.LoadFromLDtk("D:\\GameDev\\C++\\DuneEngine\\assets\\test.ldtk");
+
+    for (auto &tile: tilemap.GetTiles()) {
+        auto tileEntity = _registry->CreateEntity();
+        tileEntity.AddComponent<TransformComponent>(glm::vec2(tile.x * 2, tile.y * 2), glm::vec2(2.0f, 2.0f));
+        tileEntity.AddComponent<RigidbodyComponent>(glm::vec2(0.0f, 2.0f));
+        tileEntity.AddComponent<SpriteComponent>("Tilemap", 16, 16, tile.tilesetCoordX, tile.tilesetCoordY);
     }
 
-    //Create moving entities
-    for (int i = 0; i < 10; i++) {
-        auto _entity = _registry->CreateEntity();
-        _entity.AddComponent<TransformComponent>(glm::vec2(i * 10, i * 20),
-                                                 glm::vec2(2.0f, 2.0f));
-        _entity.AddComponent<RigidbodyComponent>(glm::vec2(15.0f * i, 10.0f * i / 2));
-        _entity.AddComponent<SpriteComponent>("RockAsteroid", 16, 16, 16 * 0, 16 * 1);
-    }
+    // for (int i = 0; i < _windowWidth / 32; i++) {
+    //     auto entity = _registry->CreateEntity();
+    //     entity.AddComponent<TransformComponent>(glm::vec2(i * 16.0f * 2, _windowHeight - 32),
+    //                                             glm::vec2(2.0f, 2.0f));
+    //     entity.AddComponent<SpriteComponent>("RockAsteroid", 16, 16, 16 * 8, 16 * 4);
+    // }
+    //
+    // //Create moving entities
+    // for (int i = 0; i < 10; i++) {
+    //     auto entity = _registry->CreateEntity();
+    //     entity.AddComponent<TransformComponent>(glm::vec2(i * 10, i * 20),
+    //                                             glm::vec2(2.0f, 2.0f));
+    //     entity.AddComponent<RigidbodyComponent>(glm::vec2(15.0f * i, 10.0f * i / 2));
+    //     entity.AddComponent<SpriteComponent>("RockAsteroid", 16, 16, 16 * 0, 16 * 1);
+    // }
 }
 
 void Game::Run() {
