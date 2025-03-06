@@ -64,6 +64,7 @@ void Game::Setup() {
     _registry->AddSystem<RenderSystem>();
 
     _assetDatabase->AddTexture(_renderer, "Tilemap", "tileset.png");
+    _assetDatabase->AddTexture(_renderer, "RockAsteroid", "RockAsteroid.png");
 
     LoadLevel();
 }
@@ -72,10 +73,15 @@ void Game::LoadLevel() const {
     Tilemap tilemap = Tilemap();
     tilemap.LoadFromLDtk(AssetDatabase::GetAssetPath("test.ldtk"));
 
+    auto player = _registry->CreateEntity();
+    player.AddComponent<TransformComponent>(glm::vec2(45, 45));
+    player.AddComponent<RigidbodyComponent>(glm::vec2(0, 25));
+    player.AddComponent<SpriteComponent>("RockAsteroid", 64, 64, 1);
+
     for (auto &tile: tilemap.GetTiles()) {
         auto tileEntity = _registry->CreateEntity();
         tileEntity.AddComponent<TransformComponent>(glm::vec2(tile.x * 4, tile.y * 4), glm::vec2(4.0f, 4.0f));
-        tileEntity.AddComponent<SpriteComponent>("Tilemap", 16, 16, tile.tilesetCoordX, tile.tilesetCoordY);
+        tileEntity.AddComponent<SpriteComponent>("Tilemap", 16, 16, 0, tile.tilesetCoordX, tile.tilesetCoordY);
     }
 }
 

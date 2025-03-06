@@ -1,6 +1,8 @@
 ﻿#ifndef RENDERSYSTEM_H
 #define RENDERSYSTEM_H
 
+#include <algorithm>
+
 #include "System.h"
 
 #include "TransformComponent.h"
@@ -15,9 +17,31 @@ public:
     };
 
     void Update(SDL_Renderer *renderer, std::unique_ptr<AssetDatabase> &assetDatabase) const {
+        // Sort by zIndex.
+        // POSSIBLE OPTIMIZATION: Only sort when a new entity is added. Mark as dirty and order here if dirty.
+        struct RenderableEntity {
+            TransformComponent transform;
+            SpriteComponent sprite;
+        };
+
+        std::vector<RenderableEntity> renderableEntities;
+
         for (auto &entity: GetEntities()) {
-            const auto transform = entity.GetComponent<TransformComponent>();
-            const auto sprite = entity.GetComponent<SpriteComponent>();
+            renderableEntities.push_back({
+                entity.GetComponent<TransformComponent>(),
+                entity.GetComponent<SpriteComponent>()
+            });
+        }
+
+        std::sort(renderableEntities.begin(), renderableEntities.end(),
+                  [](const RenderableEntity &entity1, const RenderableEntity &entity2) {
+                      return entity1.sprite.zIndex < entity2.sprite.zIndex;
+                  });
+
+        // RENDER
+        for (const auto &entity: renderableEntities) {
+            const auto transform = entity.transform;
+            const auto sprite = entity.sprite;
 
             SDL_Rect dstRect = {
                 static_cast<int>(transform.position.x),
