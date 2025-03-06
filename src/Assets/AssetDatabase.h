@@ -17,10 +17,10 @@ public:
 
     void Clear();
 
+    static std::string GetAssetPath(const std::string &filePath);
+
 private:
     std::map<std::string, SDL_Texture *> _textures;
-
-    std::string GetAssetPath(const std::string &filePath);
 };
 
 #endif //ASSETDATABASE_H
