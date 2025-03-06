@@ -16,30 +16,36 @@ public:
         RequireComponent<SpriteComponent>();
     };
 
-    void Update(SDL_Renderer *renderer, std::unique_ptr<AssetDatabase> &assetDatabase) const {
-        // Sort by zIndex.
-        // POSSIBLE OPTIMIZATION: Only sort when a new entity is added. Mark as dirty and order here if dirty.
-        struct RenderableEntity {
-            TransformComponent transform;
-            SpriteComponent sprite;
-        };
+    void Update(SDL_Renderer *renderer, const std::unique_ptr<AssetDatabase> &assetDatabase) {
+        OrderEntitiesByZIndex();
+        Render(renderer, assetDatabase);
+    }
 
-        std::vector<RenderableEntity> renderableEntities;
+private:
+    struct RenderableEntity {
+        TransformComponent transform;
+        SpriteComponent sprite;
+    };
+
+    // POSSIBLE OPTIMIZATION: Only sort when a new entity is added. Mark as dirty and order here if dirty.
+    void OrderEntitiesByZIndex() {
+        _renderableEntities.clear();
 
         for (auto &entity: GetEntities()) {
-            renderableEntities.push_back({
+            _renderableEntities.push_back({
                 entity.GetComponent<TransformComponent>(),
                 entity.GetComponent<SpriteComponent>()
             });
         }
 
-        std::sort(renderableEntities.begin(), renderableEntities.end(),
+        std::sort(_renderableEntities.begin(), _renderableEntities.end(),
                   [](const RenderableEntity &entity1, const RenderableEntity &entity2) {
                       return entity1.sprite.zIndex < entity2.sprite.zIndex;
                   });
+    }
 
-        // RENDER
-        for (const auto &entity: renderableEntities) {
+    void Render(SDL_Renderer *renderer, const std::unique_ptr<AssetDatabase> &assetDatabase) const {
+        for (const auto &entity: _renderableEntities) {
             const auto transform = entity.transform;
             const auto sprite = entity.sprite;
 
@@ -60,6 +66,8 @@ public:
             );
         }
     }
+
+    std::vector<RenderableEntity> _renderableEntities;
 };
 
 #endif //RENDERSYSTEM_H
