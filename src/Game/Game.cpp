@@ -78,7 +78,7 @@ void Game::LoadLevel() const {
     tilemap.LoadFromLDtk(AssetDatabase::GetAssetPath("test.ldtk"));
 
     auto player = _registry->CreateEntity();
-    player.AddComponent<TransformComponent>(glm::vec2(45, 45), glm::vec2(4.0f, 4.0f));
+    player.AddComponent<TransformComponent>(glm::vec2(300, 45), glm::vec2(4.0f, 4.0f));
     player.AddComponent<RigidbodyComponent>(glm::vec2(0, 25));
     player.AddComponent<SpriteComponent>("Tilemap", 16, 16, 1, 0, 19 * 16);
     player.AddComponent<AnimationComponent>(2, 12, true);
