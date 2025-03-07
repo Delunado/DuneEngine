@@ -6,8 +6,11 @@
 
 #include "MovementSystem.h"
 #include "RenderSystem.h"
+#include "AnimationSystem.h"
 
+#include "AnimationComponent.h"
 #include "TransformComponent.h"
+
 #include "Logger.h"
 #include "../Tilemap.h"
 #include "../Assets/AssetDatabase.h"
@@ -62,6 +65,7 @@ void Game::Initialize() {
 void Game::Setup() {
     _registry->AddSystem<MovementSystem>();
     _registry->AddSystem<RenderSystem>();
+    _registry->AddSystem<AnimationSystem>();
 
     _assetDatabase->AddTexture(_renderer, "Tilemap", "tileset.png");
     _assetDatabase->AddTexture(_renderer, "RockAsteroid", "RockAsteroid.png");
@@ -74,9 +78,10 @@ void Game::LoadLevel() const {
     tilemap.LoadFromLDtk(AssetDatabase::GetAssetPath("test.ldtk"));
 
     auto player = _registry->CreateEntity();
-    player.AddComponent<TransformComponent>(glm::vec2(45, 45));
+    player.AddComponent<TransformComponent>(glm::vec2(45, 45), glm::vec2(4.0f, 4.0f));
     player.AddComponent<RigidbodyComponent>(glm::vec2(0, 25));
-    player.AddComponent<SpriteComponent>("RockAsteroid", 64, 64, 1);
+    player.AddComponent<SpriteComponent>("Tilemap", 16, 16, 1, 0, 19 * 16);
+    player.AddComponent<AnimationComponent>(2, 12, true);
 
     for (auto &tile: tilemap.GetTiles()) {
         auto tileEntity = _registry->CreateEntity();
@@ -133,6 +138,7 @@ void Game::Update() {
     millisecondsPreviousFrame = SDL_GetTicks();
 
     _registry->GetSystem<MovementSystem>().Update(deltaTime);
+    _registry->GetSystem<AnimationSystem>().Update(deltaTime);
 
     _registry->Update();
 }
