@@ -27,10 +27,26 @@ bool Tilemap::LoadFromLDtk(const std::string &filename) {
     }
 
     _tiles.clear();
+    _collisionGrid.clear();
+    _collisionGridWidth = _collisionGridHeight = _collisionGridSize = 0;
 
     if (project.find("levels") != project.end()) {
         for (const auto &level: project["levels"]) {
-            ParseLevel(level);
+            // First, process the collision (IntGrid) layer, if available.
+            for (const auto &layer: level["layerInstances"]) {
+                std::string type = layer.value("__type", "");
+                if (type == "IntGrid") {
+                    ParseIntGrid(layer);
+                    break; // assume one collision layer per level
+                }
+            }
+            // Then process all tile layers.
+            for (const auto &layer: level["layerInstances"]) {
+                std::string type = layer.value("__type", "");
+                if (type == "Tiles" || type == "AutoLayer") {
+                    ParseLayer(layer);
+                }
+            }
         }
     } else {
         std::cerr << "No levels found in JSON.\n";
@@ -48,6 +64,8 @@ bool Tilemap::ParseLevel(const nlohmann::json &level) {
         for (const auto &layer: level["layerInstances"]) {
             if (std::string type = layer.value("__type", ""); type == "Tiles" || type == "AutoLayer") {
                 ParseLayer(layer);
+            } else if (type == "IntGrid") {
+                ParseIntGrid(layer);
             }
         }
     }
@@ -66,8 +84,47 @@ bool Tilemap::ParseLayer(const nlohmann::json &layer) {
             data.tilesetCoordX = tile["src"][0].get<int>();
             data.tilesetCoordY = tile["src"][1].get<int>();
 
+            // If collision info is available, determine if this tile is collidable.
+            if (_collisionGridSize > 0 && _collisionGridWidth > 0 && _collisionGridHeight > 0) {
+                int cellX = data.x / _collisionGridSize;
+                int cellY = data.y / _collisionGridSize;
+                if (cellX >= 0 && cellX < _collisionGridWidth &&
+                    cellY >= 0 && cellY < _collisionGridHeight) {
+                    data.hasCollision = _collisionGrid[cellY * _collisionGridWidth + cellX];
+                } else {
+                    data.hasCollision = false;
+                }
+            } else {
+                data.hasCollision = false;
+            }
+
             _tiles.push_back(data);
         }
+    }
+
+    return true;
+}
+
+bool Tilemap::ParseIntGrid(const nlohmann::json &layer) {
+    _collisionGridWidth = layer.value("__cWid", 0);
+    _collisionGridHeight = layer.value("__cHei", 0);
+    _collisionGridSize = layer.value("__gridSize", 0);
+
+    if (_collisionGridWidth <= 0 || _collisionGridHeight <= 0) {
+        std::cerr << "Invalid grid dimensions in IntGrid layer.\n";
+        return false;
+    }
+
+    const auto &csv = layer["intGridCsv"];
+    if (!csv.is_array() || csv.size() != static_cast<size_t>(_collisionGridWidth * _collisionGridHeight)) {
+        std::cerr << "Invalid intGridCsv data.\n";
+        return false;
+    }
+
+    _collisionGrid.resize(_collisionGridWidth * _collisionGridHeight, false);
+    // Mark a cell as collidable if its value is non-zero.
+    for (size_t i = 0; i < csv.size(); i++) {
+        _collisionGrid[i] = (csv[i].get<int>() != 0);
     }
 
     return true;

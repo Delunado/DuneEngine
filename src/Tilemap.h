@@ -10,6 +10,7 @@ public:
         int y;
         int tilesetCoordX;
         int tilesetCoordY;
+        bool hasCollision;
     };
 
     Tilemap() = default;
@@ -25,7 +26,13 @@ private:
 
     bool ParseLayer(const nlohmann::json &layer);
 
+    bool ParseIntGrid(const nlohmann::json &layer);
+
     std::vector<TileData> _tiles;
+    std::vector<bool> _collisionGrid;
+    int _collisionGridWidth; // number of cells horizontally
+    int _collisionGridHeight; // number of cells vertically
+    int _collisionGridSize; // cell size (in pixels)
 };
 
 #endif //TILEMAP_H

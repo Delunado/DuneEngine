@@ -97,6 +97,9 @@ void Game::LoadLevel() const {
         tileEntity.AddComponent<TransformComponent>(glm::vec2(tile.x * 4, tile.y * 4), glm::vec2(4.0f, 4.0f));
         tileEntity.AddComponent<SpriteComponent>("Tilemap", 16, 16, 0, tile.tilesetCoordX, tile.tilesetCoordY);
 
+        if (tile.hasCollision)
+            tileEntity.AddComponent<BoxColliderComponent>(16 * 4, 16 * 4, glm::vec2(0, 4));
+
         // Get collision info from ldtk?
     }
 }
