@@ -30,6 +30,7 @@ private:
     std::unique_ptr<AssetDatabase> _assetDatabase;
 
     bool _isRunning;
+    bool _isDebugMode = false;
     int millisecondsPreviousFrame = 0;
 
     int _windowWidth = 800;

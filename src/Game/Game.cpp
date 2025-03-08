@@ -134,6 +134,10 @@ void Game::ProcessInput() {
             case SDL_KEYDOWN:
                 if (sdlEvent.key.keysym.sym == SDLK_ESCAPE)
                     _isRunning = false;
+
+                if (sdlEvent.key.keysym.sym == SDLK_F1)
+                    _isDebugMode = !_isDebugMode;
+
                 break;
         }
     };
@@ -160,7 +164,9 @@ void Game::Render() {
     SDL_RenderClear(_renderer);
 
     _registry->GetSystem<RenderSystem>().Update(_renderer, _assetDatabase);
-    _registry->GetSystem<Debug_CollisionRenderSystem>().Update(_renderer);
+
+    if (_isDebugMode)
+        _registry->GetSystem<Debug_CollisionRenderSystem>().Update(_renderer);
 
     SDL_RenderPresent(_renderer);
 }
