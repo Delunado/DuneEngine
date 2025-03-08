@@ -14,7 +14,7 @@ public:
         RequireComponent<AnimationComponent>();
     };
 
-    void Update(const float deltaTime) const {
+    void Update() const {
         for (auto entity: GetEntities()) {
             auto &animation = entity.GetComponent<AnimationComponent>();
             auto &sprite = entity.GetComponent<SpriteComponent>();

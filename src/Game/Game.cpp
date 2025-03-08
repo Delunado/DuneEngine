@@ -8,6 +8,7 @@
 #include "RenderSystem.h"
 #include "AnimationSystem.h"
 #include "CollisionSystem.h"
+#include "Debug_CollisionRenderSystem.h"
 
 #include "Logger.h"
 #include "../Tilemap.h"
@@ -65,6 +66,7 @@ void Game::Setup() {
     _registry->AddSystem<RenderSystem>();
     _registry->AddSystem<AnimationSystem>();
     _registry->AddSystem<CollisionSystem>();
+    _registry->AddSystem<Debug_CollisionRenderSystem>();
 
     _assetDatabase->AddTexture(_renderer, "Tilemap", "tileset.png");
     _assetDatabase->AddTexture(_renderer, "RockAsteroid", "RockAsteroid.png");
@@ -79,14 +81,14 @@ void Game::LoadLevel() const {
     auto player = _registry->CreateEntity();
     player.AddComponent<TransformComponent>(glm::vec2(300, 45), glm::vec2(4.0f, 4.0f));
     player.AddComponent<RigidbodyComponent>(glm::vec2(0, 150));
-    player.AddComponent<BoxColliderComponent>(16, 16);
+    player.AddComponent<BoxColliderComponent>(16 * 4, 16 * 4);
     player.AddComponent<SpriteComponent>("Tilemap", 16, 16, 1, 0, 19 * 16);
     player.AddComponent<AnimationComponent>(2, 12, true);
 
     auto player2 = _registry->CreateEntity();
-    player2.AddComponent<TransformComponent>(glm::vec2(300, 300), glm::vec2(4.0f, 4.0f));
+    player2.AddComponent<TransformComponent>(glm::vec2(332, 300), glm::vec2(4.0f, 4.0f));
     player2.AddComponent<RigidbodyComponent>(glm::vec2(0, 25));
-    player2.AddComponent<BoxColliderComponent>(16, 16);
+    player2.AddComponent<BoxColliderComponent>(16 * 4, 16 * 4);
     player2.AddComponent<SpriteComponent>("Tilemap", 16, 16, 1, 0, 19 * 16);
     player2.AddComponent<AnimationComponent>(2, 12, true);
 
@@ -147,8 +149,8 @@ void Game::Update() {
     millisecondsPreviousFrame = SDL_GetTicks();
 
     _registry->GetSystem<MovementSystem>().Update(deltaTime);
-    _registry->GetSystem<AnimationSystem>().Update(deltaTime);
-    _registry->GetSystem<CollisionSystem>().Update(deltaTime);
+    _registry->GetSystem<AnimationSystem>().Update();
+    _registry->GetSystem<CollisionSystem>().Update();
 
     _registry->Update();
 }
@@ -158,6 +160,7 @@ void Game::Render() {
     SDL_RenderClear(_renderer);
 
     _registry->GetSystem<RenderSystem>().Update(_renderer, _assetDatabase);
+    _registry->GetSystem<Debug_CollisionRenderSystem>().Update(_renderer);
 
     SDL_RenderPresent(_renderer);
 }

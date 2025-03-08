@@ -14,8 +14,13 @@ public:
         RequireComponent<BoxColliderComponent>();
     };
 
-    void Update(float deltaTime) const {
+    void Update() const {
         auto entities = GetEntities();
+
+        for (auto &entity: entities) {
+            auto &collider = entity.GetComponent<BoxColliderComponent>();
+            collider.isColliding = false;
+        }
 
         for (auto i = entities.begin(); i != entities.end(); ++i) {
             Entity entityA = *i;
@@ -28,14 +33,18 @@ public:
                 if (entityA == entityB)
                     continue;
 
-                auto &colliderB = entityB.GetComponent<BoxColliderComponent>();
                 auto &transformB = entityB.GetComponent<TransformComponent>();
+                auto &colliderB = entityB.GetComponent<BoxColliderComponent>();
 
-                if (CheckAABBCollision(transformA.position + colliderA.offset,
-                                       glm::vec2(colliderA.width, colliderA.height),
-                                       transformB.position + colliderB.offset,
-                                       glm::vec2(colliderB.width, colliderB.height))) {
+                bool collisionDetected = CheckAABBCollision(transformA.position + colliderA.offset,
+                                                            glm::vec2(colliderA.width, colliderA.height),
+                                                            transformB.position + colliderB.offset,
+                                                            glm::vec2(colliderB.width, colliderB.height));
+
+                if (collisionDetected) {
                     Logger::Log("Collision detected!");
+                    colliderA.isColliding = true;
+                    colliderB.isColliding = true;
                 }
             }
         }
