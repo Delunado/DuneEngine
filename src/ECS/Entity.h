@@ -10,6 +10,8 @@ public:
 
     int GetId() const;
 
+    void Kill() const;
+
     template<typename T, typename... TArgs>
     void AddComponent(TArgs &&... args);
 

@@ -2,6 +2,7 @@
 #define REGISTRY_H
 #include <Component.h>
 #include <Definitions.h>
+#include <deque>
 #include <Entity.h>
 #include <Logger.h>
 #include <memory>
@@ -17,9 +18,12 @@ class System;
 class Registry {
 public:
     Registry();
+
     ~Registry();
 
     Entity CreateEntity();
+
+    void RemoveEntity(const Entity entity);
 
     // Components
     template<typename T, typename... TArgs>
@@ -49,10 +53,14 @@ public:
 
     void AddEntityToSystems(const Entity &entity);
 
+    void RemoveEntityFromSystems(const Entity &entity);
+
     void Update();
 
 private:
     int _entities = 0;
+    std::deque<int> _freeEntityIds;
+
     std::set<Entity> _entitiesToAdd;
     std::set<Entity> _entitiesToRemove;
 

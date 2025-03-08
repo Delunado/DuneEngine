@@ -45,6 +45,9 @@ public:
                     Logger::Log("Collision detected!");
                     colliderA.isColliding = true;
                     colliderB.isColliding = true;
+
+                    entityA.Kill();
+                    entityB.Kill();
                 }
             }
         }
