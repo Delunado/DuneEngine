@@ -8,12 +8,12 @@ struct AnimationComponent {
     bool loop;
     int startTime;
 
-    AnimationComponent(const int numFrames = 1, const int frameSpeedRate = 1,
-                       const bool loop = true): numFrames(numFrames),
-                                                currentFrame(1),
-                                                frameSpeedRate(frameSpeedRate),
-                                                loop(loop),
-                                                startTime(SDL_GetTicks()) {
+    explicit AnimationComponent(const int numFrames = 1, const int frameSpeedRate = 1,
+                                const bool loop = true): numFrames(numFrames),
+                                                         currentFrame(1),
+                                                         frameSpeedRate(frameSpeedRate),
+                                                         loop(loop),
+                                                         startTime(SDL_GetTicks()) {
     };
 };
 

@@ -7,9 +7,7 @@
 #include "MovementSystem.h"
 #include "RenderSystem.h"
 #include "AnimationSystem.h"
-
-#include "AnimationComponent.h"
-#include "TransformComponent.h"
+#include "CollisionSystem.h"
 
 #include "Logger.h"
 #include "../Tilemap.h"
@@ -66,6 +64,7 @@ void Game::Setup() {
     _registry->AddSystem<MovementSystem>();
     _registry->AddSystem<RenderSystem>();
     _registry->AddSystem<AnimationSystem>();
+    _registry->AddSystem<CollisionSystem>();
 
     _assetDatabase->AddTexture(_renderer, "Tilemap", "tileset.png");
     _assetDatabase->AddTexture(_renderer, "RockAsteroid", "RockAsteroid.png");
@@ -79,14 +78,24 @@ void Game::LoadLevel() const {
 
     auto player = _registry->CreateEntity();
     player.AddComponent<TransformComponent>(glm::vec2(300, 45), glm::vec2(4.0f, 4.0f));
-    player.AddComponent<RigidbodyComponent>(glm::vec2(0, 25));
+    player.AddComponent<RigidbodyComponent>(glm::vec2(0, 150));
+    player.AddComponent<BoxColliderComponent>(16, 16);
     player.AddComponent<SpriteComponent>("Tilemap", 16, 16, 1, 0, 19 * 16);
     player.AddComponent<AnimationComponent>(2, 12, true);
+
+    auto player2 = _registry->CreateEntity();
+    player2.AddComponent<TransformComponent>(glm::vec2(300, 300), glm::vec2(4.0f, 4.0f));
+    player2.AddComponent<RigidbodyComponent>(glm::vec2(0, 25));
+    player2.AddComponent<BoxColliderComponent>(16, 16);
+    player2.AddComponent<SpriteComponent>("Tilemap", 16, 16, 1, 0, 19 * 16);
+    player2.AddComponent<AnimationComponent>(2, 12, true);
 
     for (auto &tile: tilemap.GetTiles()) {
         auto tileEntity = _registry->CreateEntity();
         tileEntity.AddComponent<TransformComponent>(glm::vec2(tile.x * 4, tile.y * 4), glm::vec2(4.0f, 4.0f));
         tileEntity.AddComponent<SpriteComponent>("Tilemap", 16, 16, 0, tile.tilesetCoordX, tile.tilesetCoordY);
+
+        // Get collision info from ldtk?
     }
 }
 
@@ -139,6 +148,7 @@ void Game::Update() {
 
     _registry->GetSystem<MovementSystem>().Update(deltaTime);
     _registry->GetSystem<AnimationSystem>().Update(deltaTime);
+    _registry->GetSystem<CollisionSystem>().Update(deltaTime);
 
     _registry->Update();
 }
