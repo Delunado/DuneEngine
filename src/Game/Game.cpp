@@ -8,13 +8,16 @@
 #include "RenderSystem.h"
 #include "AnimationSystem.h"
 #include "CollisionSystem.h"
+#include "DamageSystem.h"
 #include "Debug_CollisionRenderSystem.h"
 
 #include "Logger.h"
 #include "../Tilemap.h"
 #include "../Assets/AssetDatabase.h"
+#include "../EventBus/EventBus.h"
 
-Game::Game(): _registry(std::make_unique<Registry>()), _assetDatabase(std::make_unique<AssetDatabase>()) {
+Game::Game(): _registry(std::make_unique<Registry>()), _assetDatabase(std::make_unique<AssetDatabase>()),
+              _eventBus(std::make_unique<EventBus>()) {
     Logger::Log("Game created");
     Logger::Log(std::filesystem::current_path().string());
 }
@@ -66,7 +69,10 @@ void Game::Setup() {
     _registry->AddSystem<RenderSystem>();
     _registry->AddSystem<AnimationSystem>();
     _registry->AddSystem<CollisionSystem>();
+    _registry->AddSystem<DamageSystem>();
     _registry->AddSystem<Debug_CollisionRenderSystem>();
+
+    _registry->GetSystem<DamageSystem>().SubscribeToEvents(_eventBus);
 
     _assetDatabase->AddTexture(_renderer, "Tilemap", "tileset.png");
     _assetDatabase->AddTexture(_renderer, "RockAsteroid", "RockAsteroid.png");
@@ -116,6 +122,7 @@ void Game::Run() {
 
 void Game::Clean() {
     _assetDatabase->Clear();
+    _eventBus->Clear();
 
     SDL_DestroyRenderer(_renderer);
     SDL_DestroyWindow(_window);
@@ -157,7 +164,8 @@ void Game::Update() {
 
     _registry->GetSystem<MovementSystem>().Update(deltaTime);
     _registry->GetSystem<AnimationSystem>().Update();
-    _registry->GetSystem<CollisionSystem>().Update();
+    _registry->GetSystem<CollisionSystem>().Update(_eventBus);
+    _registry->GetSystem<DamageSystem>().Update();
 
     _registry->Update();
 }

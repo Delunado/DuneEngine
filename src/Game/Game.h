@@ -3,12 +3,13 @@
 #include <SDL.h>
 #include <memory>
 
+class EventBus;
 class AssetDatabase;
 class Entity;
 class Registry;
 
-const int FPS = 60;
-const int MILLISECONDS_PER_FRAME = 1000 / FPS;
+constexpr int FPS = 60;
+constexpr int MILLISECONDS_PER_FRAME = 1000 / FPS;
 
 class Game {
 public:
@@ -28,6 +29,7 @@ private:
 
     std::unique_ptr<Registry> _registry;
     std::unique_ptr<AssetDatabase> _assetDatabase;
+    std::unique_ptr<EventBus> _eventBus;
 
     bool _isRunning;
     bool _isDebugMode = false;

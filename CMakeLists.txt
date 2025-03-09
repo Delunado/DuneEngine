@@ -20,7 +20,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib/${ARCH_DIR}/${CMAKE_B
 include_directories(
         src/Game
         src/Logger
-        src/ECS
+        src/Core/ECS
         src/Components
         src/Systems)
 

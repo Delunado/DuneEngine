@@ -3,6 +3,8 @@
 
 #include "Entity.h"
 #include "System.h"
+#include "../EventBus/EventBus.h"
+#include "../Events/CollisionEvent.h"
 
 #include "BoxColliderComponent.h"
 #include "TransformComponent.h"
@@ -14,7 +16,7 @@ public:
         RequireComponent<BoxColliderComponent>();
     };
 
-    void Update() const {
+    void Update(const std::unique_ptr<EventBus> &eventBus) const {
         auto entities = GetEntities();
 
         for (auto &entity: entities) {
@@ -46,8 +48,7 @@ public:
                     colliderA.isColliding = true;
                     colliderB.isColliding = true;
 
-                    entityA.Kill();
-                    entityB.Kill();
+                    eventBus->Emit<CollisionEvent>(entityA, entityB);
                 }
             }
         }
