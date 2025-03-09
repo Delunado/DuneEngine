@@ -9,6 +9,7 @@
 #include "AnimationSystem.h"
 #include "CollisionSystem.h"
 #include "DamageSystem.h"
+#include "KeyboardMovementSystem.h"
 #include "Debug_CollisionRenderSystem.h"
 
 #include "Logger.h"
@@ -70,9 +71,11 @@ void Game::Setup() {
     _registry->AddSystem<AnimationSystem>();
     _registry->AddSystem<CollisionSystem>();
     _registry->AddSystem<DamageSystem>();
+    _registry->AddSystem<KeyboardMovementSystem>();
     _registry->AddSystem<Debug_CollisionRenderSystem>();
 
-    _registry->GetSystem<DamageSystem>().SubscribeToEvents(_eventBus);
+    //_registry->GetSystem<DamageSystem>().SubscribeToEvents(_eventBus);
+    _registry->GetSystem<KeyboardMovementSystem>().SubscribeToEvents(_eventBus);
 
     _assetDatabase->AddTexture(_renderer, "Tilemap", "tileset.png");
     _assetDatabase->AddTexture(_renderer, "RockAsteroid", "RockAsteroid.png");
@@ -93,7 +96,7 @@ void Game::LoadLevel() const {
 
     auto player2 = _registry->CreateEntity();
     player2.AddComponent<TransformComponent>(glm::vec2(332, 300), glm::vec2(4.0f, 4.0f));
-    player2.AddComponent<RigidbodyComponent>(glm::vec2(0, 25));
+    // player2.AddComponent<RigidbodyComponent>(glm::vec2(0, 25));
     player2.AddComponent<BoxColliderComponent>(16 * 4, 16 * 4);
     player2.AddComponent<SpriteComponent>("Tilemap", 16, 16, 1, 0, 19 * 16);
     player2.AddComponent<AnimationComponent>(2, 12, true);
@@ -105,8 +108,6 @@ void Game::LoadLevel() const {
 
         if (tile.hasCollision)
             tileEntity.AddComponent<BoxColliderComponent>(16 * 4, 16 * 4, glm::vec2(0, 4));
-
-        // Get collision info from ldtk?
     }
 }
 
@@ -141,14 +142,23 @@ void Game::ProcessInput() {
                 _isRunning = false;
                 break;
 
-            case SDL_KEYDOWN:
+            case SDL_KEYUP: {
+                auto keyReleasedEvent = KeyReleasedEvent(sdlEvent.key.keysym.sym);
+                _eventBus->Emit<KeyReleasedEvent>(keyReleasedEvent);
+            }
+            break;
+
+            case SDL_KEYDOWN: {
                 if (sdlEvent.key.keysym.sym == SDLK_ESCAPE)
                     _isRunning = false;
 
                 if (sdlEvent.key.keysym.sym == SDLK_F1)
                     _isDebugMode = !_isDebugMode;
 
-                break;
+                auto keyPressedEvent = KeyPressedEvent(sdlEvent.key.keysym.sym);
+                _eventBus->Emit<KeyPressedEvent>(keyPressedEvent);
+            }
+            break;
         }
     };
 }
@@ -166,6 +176,7 @@ void Game::Update() {
     _registry->GetSystem<AnimationSystem>().Update();
     _registry->GetSystem<CollisionSystem>().Update(_eventBus);
     _registry->GetSystem<DamageSystem>().Update();
+    _registry->GetSystem<KeyboardMovementSystem>().Update();
 
     _registry->Update();
 }
