@@ -23,6 +23,11 @@ public:
 
     void Clean();
 
+    static int _windowWidth;
+    static int _windowHeight;
+    static int _mapWidth;
+    static int _mapHeight;
+
 private:
     SDL_Window *_window;
     SDL_Renderer *_renderer;
@@ -35,8 +40,7 @@ private:
     bool _isDebugMode = false;
     int millisecondsPreviousFrame = 0;
 
-    int _windowWidth = 800;
-    int _windowHeight = 600;
+    SDL_Rect _camera;
 
     void Setup();
 

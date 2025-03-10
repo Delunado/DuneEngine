@@ -16,9 +16,9 @@ public:
         RequireComponent<SpriteComponent>();
     };
 
-    void Update(SDL_Renderer *renderer, const std::unique_ptr<AssetDatabase> &assetDatabase) {
+    void Update(SDL_Renderer *renderer, SDL_Rect camera, const std::unique_ptr<AssetDatabase> &assetDatabase) {
         OrderEntitiesByZIndex();
-        Render(renderer, assetDatabase);
+        Render(renderer, camera, assetDatabase);
     }
 
 private:
@@ -44,14 +44,14 @@ private:
                   });
     }
 
-    void Render(SDL_Renderer *renderer, const std::unique_ptr<AssetDatabase> &assetDatabase) const {
+    void Render(SDL_Renderer *renderer, SDL_Rect camera, const std::unique_ptr<AssetDatabase> &assetDatabase) const {
         for (const auto &entity: _renderableEntities) {
             const auto transform = entity.transform;
             const auto sprite = entity.sprite;
 
             SDL_Rect dstRect = {
-                static_cast<int>(transform.position.x),
-                static_cast<int>(transform.position.y),
+                static_cast<int>(transform.position.x - (sprite.isFixed ? 0 : camera.x)),
+                static_cast<int>(transform.position.y - (sprite.isFixed ? 0 : camera.y)),
                 static_cast<int>(sprite.width * transform.scale.x),
                 static_cast<int>(sprite.height * transform.scale.y)
             };

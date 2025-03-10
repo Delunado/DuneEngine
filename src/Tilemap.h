@@ -21,6 +21,10 @@ public:
 
     const std::vector<TileData> &GetTiles() const;
 
+    int GetWidth() const;
+
+    int GetHeight() const;
+
 private:
     bool ParseLevel(const nlohmann::json &level);
 
@@ -29,6 +33,8 @@ private:
     bool ParseIntGrid(const nlohmann::json &layer);
 
     std::vector<TileData> _tiles;
+    int _width;
+    int _height;
     std::vector<bool> _collisionGrid;
     int _collisionGridWidth; // number of cells horizontally
     int _collisionGridHeight; // number of cells vertically

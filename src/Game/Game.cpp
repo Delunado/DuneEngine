@@ -10,12 +10,18 @@
 #include "CollisionSystem.h"
 #include "DamageSystem.h"
 #include "KeyboardMovementSystem.h"
+#include "CameraMovementSystem.h"
 #include "Debug_CollisionRenderSystem.h"
 
 #include "Logger.h"
 #include "../Tilemap.h"
 #include "../Assets/AssetDatabase.h"
 #include "../EventBus/EventBus.h"
+
+int Game::_windowWidth = 800;
+int Game::_windowHeight = 600;
+int Game::_mapWidth = 600;
+int Game::_mapHeight = 400;
 
 Game::Game(): _registry(std::make_unique<Registry>()), _assetDatabase(std::make_unique<AssetDatabase>()),
               _eventBus(std::make_unique<EventBus>()) {
@@ -62,6 +68,12 @@ void Game::Initialize() {
     }
 
     SDL_SetWindowFullscreen(_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+    _camera.x = 0;
+    _camera.y = 0;
+    _camera.w = _windowWidth;
+    _camera.h = _windowHeight;
+
     _isRunning = true;
 }
 
@@ -72,6 +84,7 @@ void Game::Setup() {
     _registry->AddSystem<CollisionSystem>();
     _registry->AddSystem<DamageSystem>();
     _registry->AddSystem<KeyboardMovementSystem>();
+    _registry->AddSystem<CameraMovementSystem>();
     _registry->AddSystem<Debug_CollisionRenderSystem>();
 
     //_registry->GetSystem<DamageSystem>().SubscribeToEvents(_eventBus);
@@ -91,25 +104,22 @@ void Game::LoadLevel() const {
     player.AddComponent<TransformComponent>(glm::vec2(300, 45), glm::vec2(4.0f, 4.0f));
     player.AddComponent<RigidbodyComponent>(glm::vec2(0, 150));
     player.AddComponent<BoxColliderComponent>(16 * 4, 16 * 4);
-    player.AddComponent<SpriteComponent>("Tilemap", 16, 16, 1, 0, 19 * 16);
+    player.AddComponent<SpriteComponent>("Tilemap", 16, 16, 1, false, 0, 19 * 16);
     player.AddComponent<AnimationComponent>(2, 12, true);
     player.AddComponent<MovementByInputComponent>();
-
-    auto player2 = _registry->CreateEntity();
-    player2.AddComponent<TransformComponent>(glm::vec2(332, 300), glm::vec2(4.0f, 4.0f));
-    player2.AddComponent<RigidbodyComponent>(glm::vec2(0, 25));
-    player2.AddComponent<BoxColliderComponent>(16 * 4, 16 * 4);
-    player2.AddComponent<SpriteComponent>("Tilemap", 16, 16, 1, 0, 19 * 16);
-    player2.AddComponent<AnimationComponent>(2, 12, true);
+    player.AddComponent<CameraFollowComponent>();
 
     for (auto &tile: tilemap.GetTiles()) {
         auto tileEntity = _registry->CreateEntity();
         tileEntity.AddComponent<TransformComponent>(glm::vec2(tile.x * 4, tile.y * 4), glm::vec2(4.0f, 4.0f));
-        tileEntity.AddComponent<SpriteComponent>("Tilemap", 16, 16, 0, tile.tilesetCoordX, tile.tilesetCoordY);
+        tileEntity.AddComponent<SpriteComponent>("Tilemap", 16, 16, 0, false, tile.tilesetCoordX, tile.tilesetCoordY);
 
         if (tile.hasCollision)
             tileEntity.AddComponent<BoxColliderComponent>(16 * 4, 16 * 4, glm::vec2(0, 4));
     }
+
+    _mapWidth = tilemap.GetWidth() * 16 * 4;
+    _mapHeight = tilemap.GetHeight() * 16 * 4;
 }
 
 void Game::Run() {
@@ -179,6 +189,8 @@ void Game::Update() {
     _registry->GetSystem<DamageSystem>().Update();
     _registry->GetSystem<KeyboardMovementSystem>().Update();
 
+    _registry->GetSystem<CameraMovementSystem>().Update(_camera);
+
     _registry->Update();
 }
 
@@ -186,10 +198,10 @@ void Game::Render() {
     SDL_SetRenderDrawColor(_renderer, 3, 3, 3, 255);
     SDL_RenderClear(_renderer);
 
-    _registry->GetSystem<RenderSystem>().Update(_renderer, _assetDatabase);
+    _registry->GetSystem<RenderSystem>().Update(_renderer, _camera, _assetDatabase);
 
     if (_isDebugMode)
-        _registry->GetSystem<Debug_CollisionRenderSystem>().Update(_renderer);
+        _registry->GetSystem<Debug_CollisionRenderSystem>().Update(_renderer, _camera);
 
     SDL_RenderPresent(_renderer);
 }

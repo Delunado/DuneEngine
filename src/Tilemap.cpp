@@ -59,6 +59,14 @@ const std::vector<Tilemap::TileData> &Tilemap::GetTiles() const {
     return _tiles;
 }
 
+int Tilemap::GetWidth() const {
+    return _width;
+}
+
+int Tilemap::GetHeight() const {
+    return _height;
+}
+
 bool Tilemap::ParseLevel(const nlohmann::json &level) {
     if (level.contains("layerInstances") && !level["layerInstances"].is_null()) {
         for (const auto &layer: level["layerInstances"]) {
@@ -99,6 +107,8 @@ bool Tilemap::ParseLayer(const nlohmann::json &layer) {
             }
 
             _tiles.push_back(data);
+            _width = std::max(_width, data.x);
+            _height = std::max(_height, data.y);
         }
     }
 
