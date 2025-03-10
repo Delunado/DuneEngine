@@ -93,10 +93,11 @@ void Game::LoadLevel() const {
     player.AddComponent<BoxColliderComponent>(16 * 4, 16 * 4);
     player.AddComponent<SpriteComponent>("Tilemap", 16, 16, 1, 0, 19 * 16);
     player.AddComponent<AnimationComponent>(2, 12, true);
+    player.AddComponent<MovementByInputComponent>();
 
     auto player2 = _registry->CreateEntity();
     player2.AddComponent<TransformComponent>(glm::vec2(332, 300), glm::vec2(4.0f, 4.0f));
-    // player2.AddComponent<RigidbodyComponent>(glm::vec2(0, 25));
+    player2.AddComponent<RigidbodyComponent>(glm::vec2(0, 25));
     player2.AddComponent<BoxColliderComponent>(16 * 4, 16 * 4);
     player2.AddComponent<SpriteComponent>("Tilemap", 16, 16, 1, 0, 19 * 16);
     player2.AddComponent<AnimationComponent>(2, 12, true);

@@ -6,10 +6,12 @@
 #include "../Events/KeyPressedEvent.h"
 #include "../Events/KeyReleasedEvent.h"
 #include "RigidbodyComponent.h"
+#include "MovementByInputComponent.h"
 
 class KeyboardMovementSystem : public System {
 public:
     KeyboardMovementSystem() {
+        RequireComponent<MovementByInputComponent>();
         RequireComponent<RigidbodyComponent>();
     }
 
