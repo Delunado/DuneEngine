@@ -19,13 +19,14 @@
 #include "../Assets/AssetDatabase.h"
 #include "../EventBus/EventBus.h"
 
-int Game::_windowWidth = 800;
-int Game::_windowHeight = 600;
+int Game::_windowWidth = 1920;
+int Game::_windowHeight = 1080;
 int Game::_mapWidth = 600;
 int Game::_mapHeight = 400;
 
 Game::Game(): _registry(std::make_unique<Registry>()), _assetDatabase(std::make_unique<AssetDatabase>()),
-              _eventBus(std::make_unique<EventBus>()), _camera(std::make_unique<Camera>(_windowWidth, _windowHeight)) {
+              _eventBus(std::make_unique<EventBus>()),
+              _camera(std::make_unique<Camera>(_windowWidth, _windowHeight, 4.0f)) {
     Logger::Log("Game created");
     Logger::Log(std::filesystem::current_path().string());
 }
@@ -97,8 +98,8 @@ void Game::LoadLevel() const {
     tilemap.LoadFromLDtk(AssetDatabase::GetAssetPath("test.ldtk"));
 
     auto player = _registry->CreateEntity();
-    player.AddComponent<TransformComponent>(glm::vec2(300, 45), glm::vec2(4.0f, 4.0f));
-    player.AddComponent<RigidbodyComponent>(glm::vec2(0, 150));
+    player.AddComponent<TransformComponent>(glm::vec2(300, 45));
+    player.AddComponent<RigidbodyComponent>(glm::vec2(0, 10));
     player.AddComponent<BoxColliderComponent>(16, 16);
     player.AddComponent<SpriteComponent>("Tilemap", 16, 16, 1, false, 0, 19 * 16);
     player.AddComponent<AnimationComponent>(2, 12, true);
@@ -107,15 +108,15 @@ void Game::LoadLevel() const {
 
     for (auto &tile: tilemap.GetTiles()) {
         auto tileEntity = _registry->CreateEntity();
-        tileEntity.AddComponent<TransformComponent>(glm::vec2(tile.x * 4, tile.y * 4), glm::vec2(4.0f, 4.0f));
+        tileEntity.AddComponent<TransformComponent>(glm::vec2(tile.x, tile.y));
         tileEntity.AddComponent<SpriteComponent>("Tilemap", 16, 16, 0, false, tile.tilesetCoordX, tile.tilesetCoordY);
 
         if (tile.hasCollision)
-            tileEntity.AddComponent<BoxColliderComponent>(16 * 4, 16 * 4, glm::vec2(0, 4));
+            tileEntity.AddComponent<BoxColliderComponent>(16, 16, glm::vec2(0, 4));
     }
 
-    _mapWidth = tilemap.GetWidth() * 16 * 4;
-    _mapHeight = tilemap.GetHeight() * 16 * 4;
+    _mapWidth = tilemap.GetWidth() * 16;
+    _mapHeight = tilemap.GetHeight() * 16;
 }
 
 void Game::Run() {

@@ -53,10 +53,10 @@ private:
             const auto sprite = entity.sprite;
 
             SDL_Rect dstRect = {
-                static_cast<int>(transform.position.x - (sprite.isFixed ? 0 : camera->GetX())),
-                static_cast<int>(transform.position.y - (sprite.isFixed ? 0 : camera->GetY())),
-                static_cast<int>(sprite.width * transform.scale.x),
-                static_cast<int>(sprite.height * transform.scale.y)
+                static_cast<int>((transform.position.x - (sprite.isFixed ? 0 : camera->GetX())) * camera->GetPPU()),
+                static_cast<int>((transform.position.y - (sprite.isFixed ? 0 : camera->GetY())) * camera->GetPPU()),
+                static_cast<int>(sprite.width * transform.scale.x * camera->GetPPU()),
+                static_cast<int>(sprite.height * transform.scale.y * camera->GetPPU())
             };
 
             SDL_RenderCopyEx(renderer,

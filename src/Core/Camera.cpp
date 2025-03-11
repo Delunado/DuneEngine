@@ -1,6 +1,6 @@
 ﻿#include "Camera.h"
 
-Camera::Camera(const int width, const int height): _camera({0, 0, width, height}) {
+Camera::Camera(const int width, const int height, const float PPU): _camera({0, 0, width, height}), _PPU(PPU) {
 }
 
 void Camera::SetPosition(const int x, const int y) {
@@ -19,6 +19,13 @@ void Camera::SetY(const int y) {
 void Camera::SetSize(const int width, const int height) {
     _camera.w = width;
     _camera.h = height;
+}
+
+void Camera::SetPPU(float PPU) {
+    if (PPU <= 0)
+        PPU = 0.1f;
+
+    _PPU = PPU;
 }
 
 glm::vec2 Camera::GetPosition() const {
@@ -43,4 +50,8 @@ int Camera::GetWidth() const {
 
 int Camera::GetHeight() const {
     return _camera.h;
+}
+
+float Camera::GetPPU() const {
+    return _PPU;
 }

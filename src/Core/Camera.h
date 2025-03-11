@@ -6,7 +6,7 @@
 
 class Camera {
 public:
-    Camera(int width, int height);
+    Camera(int width, int height, float PPU = 16.0f);
 
     void SetPosition(int x, int y);
 
@@ -15,6 +15,8 @@ public:
     void SetY(int y);
 
     void SetSize(int width, int height);
+
+    void SetPPU(float PPU);
 
     glm::vec2 GetPosition() const;
 
@@ -28,8 +30,11 @@ public:
 
     int GetHeight() const;
 
+    float GetPPU() const;
+
 private:
     SDL_Rect _camera;
+    float _PPU;
 };
 
 #endif //CAMERA_H

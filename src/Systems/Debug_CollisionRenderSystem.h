@@ -20,10 +20,10 @@ public:
             auto &collider = entity.GetComponent<BoxColliderComponent>();
 
             SDL_Rect rect = {
-                static_cast<int>(transform.position.x + collider.offset.x - camera->GetX()),
-                static_cast<int>(transform.position.y + collider.offset.y - camera->GetY()),
-                static_cast<int>(collider.width * transform.scale.x),
-                static_cast<int>(collider.height * transform.scale.y)
+                static_cast<int>((transform.position.x - camera->GetX()) * camera->GetPPU()),
+                static_cast<int>((transform.position.y - camera->GetY()) * camera->GetPPU()),
+                static_cast<int>(collider.width * transform.scale.x * camera->GetPPU()),
+                static_cast<int>(collider.height * transform.scale.y * camera->GetPPU())
             };
 
             if (collider.isColliding)
