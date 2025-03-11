@@ -5,6 +5,7 @@
 
 #include "TransformComponent.h"
 #include "CameraFollowComponent.h"
+#include "../Core/Camera.h"
 
 class CameraMovementSystem : public System {
 public:
@@ -13,22 +14,22 @@ public:
         RequireComponent<TransformComponent>();
     }
 
-    void Update(SDL_Rect &camera) {
+    void Update(const std::unique_ptr<Camera> &camera) {
         for (auto &entity: GetEntities()) {
             auto &transform = entity.GetComponent<TransformComponent>();
 
-            if (transform.position.x + (camera.w / 2) < Game::_mapWidth) {
-                camera.x = transform.position.x - (Game::_windowWidth / 2);
+            if (transform.position.x + (camera->GetWidth() / 2) < Game::_mapWidth) {
+                camera->SetX(transform.position.x - (Game::_windowWidth / 2));
             }
 
-            if (transform.position.y + (camera.h / 2) < Game::_mapHeight) {
-                camera.y = transform.position.y - (Game::_windowHeight / 2);
+            if (transform.position.y + (camera->GetHeight() / 2) < Game::_mapHeight) {
+                camera->SetY(transform.position.y - (Game::_windowHeight / 2));
             }
 
-            camera.x = camera.x < 0 ? 0 : camera.x;
-            camera.y = camera.y < 0 ? 0 : camera.y;
-            camera.x = camera.x > camera.w ? camera.w : camera.x;
-            camera.y = camera.y > camera.h ? camera.h : camera.y;
+            camera->SetX(camera->GetX() < 0 ? 0 : camera->GetX());
+            camera->SetY(camera->GetY() < 0 ? 0 : camera->GetY());
+            camera->SetX(camera->GetX() > camera->GetWidth() ? camera->GetWidth() : camera->GetX());
+            camera->SetY(camera->GetY() > camera->GetHeight() ? camera->GetHeight() : camera->GetY());
         }
     }
 };

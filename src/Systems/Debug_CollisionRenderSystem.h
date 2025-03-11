@@ -14,16 +14,16 @@ public:
         RequireComponent<BoxColliderComponent>();
     };
 
-    void Update(SDL_Renderer *renderer, SDL_Rect &camera) const {
+    void Update(SDL_Renderer *renderer, const std::unique_ptr<Camera> &camera) const {
         for (auto &entity: GetEntities()) {
             auto &transform = entity.GetComponent<TransformComponent>();
             auto &collider = entity.GetComponent<BoxColliderComponent>();
 
             SDL_Rect rect = {
-                static_cast<int>(transform.position.x + collider.offset.x - camera.x),
-                static_cast<int>(transform.position.y + collider.offset.y - camera.y),
-                collider.width,
-                collider.height
+                static_cast<int>(transform.position.x + collider.offset.x - camera->GetX()),
+                static_cast<int>(transform.position.y + collider.offset.y - camera->GetY()),
+                static_cast<int>(collider.width * transform.scale.x),
+                static_cast<int>(collider.height * transform.scale.y)
             };
 
             if (collider.isColliding)

@@ -15,6 +15,7 @@
 
 #include "Logger.h"
 #include "../Tilemap.h"
+#include "../Core/Camera.h"
 #include "../Assets/AssetDatabase.h"
 #include "../EventBus/EventBus.h"
 
@@ -24,7 +25,7 @@ int Game::_mapWidth = 600;
 int Game::_mapHeight = 400;
 
 Game::Game(): _registry(std::make_unique<Registry>()), _assetDatabase(std::make_unique<AssetDatabase>()),
-              _eventBus(std::make_unique<EventBus>()) {
+              _eventBus(std::make_unique<EventBus>()), _camera(std::make_unique<Camera>(_windowWidth, _windowHeight)) {
     Logger::Log("Game created");
     Logger::Log(std::filesystem::current_path().string());
 }
@@ -69,11 +70,6 @@ void Game::Initialize() {
 
     SDL_SetWindowFullscreen(_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
-    _camera.x = 0;
-    _camera.y = 0;
-    _camera.w = _windowWidth;
-    _camera.h = _windowHeight;
-
     _isRunning = true;
 }
 
@@ -103,7 +99,7 @@ void Game::LoadLevel() const {
     auto player = _registry->CreateEntity();
     player.AddComponent<TransformComponent>(glm::vec2(300, 45), glm::vec2(4.0f, 4.0f));
     player.AddComponent<RigidbodyComponent>(glm::vec2(0, 150));
-    player.AddComponent<BoxColliderComponent>(16 * 4, 16 * 4);
+    player.AddComponent<BoxColliderComponent>(16, 16);
     player.AddComponent<SpriteComponent>("Tilemap", 16, 16, 1, false, 0, 19 * 16);
     player.AddComponent<AnimationComponent>(2, 12, true);
     player.AddComponent<MovementByInputComponent>();

@@ -7,6 +7,7 @@ class EventBus;
 class AssetDatabase;
 class Entity;
 class Registry;
+class Camera;
 
 constexpr int FPS = 60;
 constexpr int MILLISECONDS_PER_FRAME = 1000 / FPS;
@@ -36,11 +37,11 @@ private:
     std::unique_ptr<AssetDatabase> _assetDatabase;
     std::unique_ptr<EventBus> _eventBus;
 
+    std::unique_ptr<Camera> _camera;
+
     bool _isRunning;
     bool _isDebugMode = false;
     int millisecondsPreviousFrame = 0;
-
-    SDL_Rect _camera;
 
     void Setup();
 
