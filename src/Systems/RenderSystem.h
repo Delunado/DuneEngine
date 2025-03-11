@@ -52,11 +52,13 @@ private:
             const auto transform = entity.transform;
             const auto sprite = entity.sprite;
 
+            const float zoomScale = camera->GetZoomScale();
+
             SDL_Rect dstRect = {
-                static_cast<int>((transform.position.x - (sprite.isFixed ? 0 : camera->GetX())) * camera->GetPPU()),
-                static_cast<int>((transform.position.y - (sprite.isFixed ? 0 : camera->GetY())) * camera->GetPPU()),
-                static_cast<int>(sprite.width * transform.scale.x * camera->GetPPU()),
-                static_cast<int>(sprite.height * transform.scale.y * camera->GetPPU())
+                static_cast<int>((transform.position.x - (sprite.isFixed ? 0 : camera->GetX())) * zoomScale),
+                static_cast<int>((transform.position.y - (sprite.isFixed ? 0 : camera->GetY())) * zoomScale),
+                static_cast<int>(sprite.width * transform.scale.x * zoomScale),
+                static_cast<int>(sprite.height * transform.scale.y * zoomScale)
             };
 
             SDL_RenderCopyEx(renderer,

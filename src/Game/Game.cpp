@@ -26,7 +26,7 @@ int Game::_mapHeight = 400;
 
 Game::Game(): _registry(std::make_unique<Registry>()), _assetDatabase(std::make_unique<AssetDatabase>()),
               _eventBus(std::make_unique<EventBus>()),
-              _camera(std::make_unique<Camera>(_windowWidth, _windowHeight, 4.0f)) {
+              _camera(std::make_unique<Camera>(_windowWidth, _windowHeight, 16.0f, 12.0f)) {
     Logger::Log("Game created");
     Logger::Log(std::filesystem::current_path().string());
 }

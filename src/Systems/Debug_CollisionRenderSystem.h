@@ -19,11 +19,13 @@ public:
             auto &transform = entity.GetComponent<TransformComponent>();
             auto &collider = entity.GetComponent<BoxColliderComponent>();
 
+            float zoomScale = camera->GetZoomScale();
+
             SDL_Rect rect = {
-                static_cast<int>((transform.position.x - camera->GetX()) * camera->GetPPU()),
-                static_cast<int>((transform.position.y - camera->GetY()) * camera->GetPPU()),
-                static_cast<int>(collider.width * transform.scale.x * camera->GetPPU()),
-                static_cast<int>(collider.height * transform.scale.y * camera->GetPPU())
+                static_cast<int>((transform.position.x - camera->GetX()) * camera->GetPPU() * zoomScale),
+                static_cast<int>((transform.position.y - camera->GetY()) * camera->GetPPU() * zoomScale),
+                static_cast<int>(collider.width * transform.scale.x * camera->GetPPU() * zoomScale),
+                static_cast<int>(collider.height * transform.scale.y * camera->GetPPU() * zoomScale)
             };
 
             if (collider.isColliding)

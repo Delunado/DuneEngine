@@ -1,6 +1,7 @@
 ﻿#include "Camera.h"
 
-Camera::Camera(const int width, const int height, const float PPU): _camera({0, 0, width, height}), _PPU(PPU) {
+Camera::Camera(const int width, const int height, const float PPU,
+               const float orthoSize): _camera({0, 0, width, height}), _PPU(PPU), _orthoSize(orthoSize) {
 }
 
 void Camera::SetPosition(const int x, const int y) {
@@ -26,6 +27,13 @@ void Camera::SetPPU(float PPU) {
         PPU = 0.1f;
 
     _PPU = PPU;
+}
+
+void Camera::SetOrthoSize(float orthoSize) {
+    if (orthoSize <= 0)
+        orthoSize = 0.1f;
+
+    _orthoSize = orthoSize;
 }
 
 glm::vec2 Camera::GetPosition() const {
@@ -54,4 +62,12 @@ int Camera::GetHeight() const {
 
 float Camera::GetPPU() const {
     return _PPU;
+}
+
+float Camera::GetOrthoSize() const {
+    return _orthoSize;
+}
+
+float Camera::GetZoomScale() const {
+    return (_camera.h / 2.0f) / (_orthoSize * _PPU);
 }
