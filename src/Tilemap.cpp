@@ -8,6 +8,9 @@
 
 using json = nlohmann::json;
 
+Tilemap::Tilemap(int tilePPU): _tilePPU(tilePPU) {
+}
+
 // METER TILEMAPS EN ASSET STORE
 bool Tilemap::LoadFromLDtk(const std::string &filename) {
     std::ifstream file(filename);
@@ -87,8 +90,8 @@ bool Tilemap::ParseLayer(const nlohmann::json &layer) {
     if (layer.contains("gridTiles") && layer["gridTiles"].is_array()) {
         for (const auto &tile: layer["gridTiles"]) {
             TileData data;
-            data.x = tile["px"][0].get<int>() + offsetX;
-            data.y = tile["px"][1].get<int>() + offsetY;
+            data.x = (tile["px"][0].get<int>() + offsetX)  / _tilePPU;
+            data.y = (tile["px"][1].get<int>() + offsetY) / _tilePPU;
             data.tilesetCoordX = tile["src"][0].get<int>();
             data.tilesetCoordY = tile["src"][1].get<int>();
 

@@ -6,7 +6,7 @@
 
 class Camera {
 public:
-    Camera(int width, int height, float PPU = 16.0f, float orthoSize = 5.0f);
+    Camera(int screenWidth, int screenHeight, float orthoSize = 6.0f);
 
     void SetPosition(int x, int y);
 
@@ -14,9 +14,7 @@ public:
 
     void SetY(int y);
 
-    void SetSize(int width, int height);
-
-    void SetPPU(float PPU);
+    void SetScreenSize(int width, int height);
 
     void SetOrthoSize(float orthoSize);
 
@@ -28,19 +26,22 @@ public:
 
     int GetY() const;
 
-    int GetWidth() const;
+    int GetScreenWidth() const;
 
-    int GetHeight() const;
-
-    float GetPPU() const;
+    int GetScreenHeight() const;
 
     float GetOrthoSize() const;
 
-    float GetZoomScale() const;
+    float GetOrthoScale() const;
+
+    glm::vec2 WorldToScreen(const glm::vec2 &worldPosition) const;
+
+    glm::vec2 ScreenToWorld(const glm::vec2 &screenPosition) const;
 
 private:
-    SDL_Rect _camera;
-    float _PPU;
+    glm::vec2 _position;
+    glm::ivec2 _screenSize;
+
     float _orthoSize;
 };
 

@@ -15,21 +15,21 @@ public:
     }
 
     void Update(const std::unique_ptr<Camera> &camera) {
+        float zoomScale = camera->GetOrthoScale();
+
         for (auto &entity: GetEntities()) {
             auto &transform = entity.GetComponent<TransformComponent>();
 
-            if (transform.position.x + (camera->GetWidth() / 2) < Game::_mapWidth) {
-                camera->SetX(transform.position.x - (Game::_windowWidth / 2));
-            }
+            float cameraX = transform.position.x; //- camera->GetScreenWidth() / (2.0f * camera->GetOrthoScale());
+            float cameraY = transform.position.y; //- camera->GetScreenHeight() / (2.0f * camera->GetOrthoScale());
 
-            if (transform.position.y + (camera->GetHeight() / 2) < Game::_mapHeight) {
-                camera->SetY(transform.position.y - (Game::_windowHeight / 2));
-            }
+            // float viewWidthInUnits = camera->GetScreenWidth() / camera->GetOrthoScale();
+            // float viewHeightInUnits = camera->GetScreenHeight() / camera->GetOrthoScale();
 
-            camera->SetX(camera->GetX() < 0 ? 0 : camera->GetX());
-            camera->SetY(camera->GetY() < 0 ? 0 : camera->GetY());
-            camera->SetX(camera->GetX() > camera->GetWidth() ? camera->GetWidth() : camera->GetX());
-            camera->SetY(camera->GetY() > camera->GetHeight() ? camera->GetHeight() : camera->GetY());
+            // cameraX = std::max(0.0f, std::min(cameraX, static_cast<float>(Game::_mapWidth) - viewWidthInUnits));
+            // cameraY = std::max(0.0f, std::min(cameraY, static_cast<float>(Game::_mapHeight) - viewHeightInUnits));
+
+            camera->SetPosition(cameraX, cameraY);
         }
     }
 };

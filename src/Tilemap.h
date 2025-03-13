@@ -13,7 +13,7 @@ public:
         bool hasCollision;
     };
 
-    Tilemap() = default;
+    Tilemap(int tilePPU);
 
     ~Tilemap() = default;
 
@@ -31,6 +31,8 @@ private:
     bool ParseLayer(const nlohmann::json &layer);
 
     bool ParseIntGrid(const nlohmann::json &layer);
+
+    int _tilePPU;
 
     std::vector<TileData> _tiles;
     int _width;

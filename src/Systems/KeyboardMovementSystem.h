@@ -25,19 +25,19 @@ public:
             auto &rigidbody = entity.GetComponent<RigidbodyComponent>();
             switch (event.symbol) {
                 case SDLK_w:
-                    rigidbody.velocity.y = -250;
+                    rigidbody.velocity.y = -1;
                     break;
 
                 case SDLK_s:
-                    rigidbody.velocity.y = 250;
+                    rigidbody.velocity.y = 1;
                     break;
 
                 case SDLK_a:
-                    rigidbody.velocity.x = -250;
+                    rigidbody.velocity.x = -1;
                     break;
 
                 case SDLK_d:
-                    rigidbody.velocity.x = 250;
+                    rigidbody.velocity.x = 1;
                     break;
             }
         }

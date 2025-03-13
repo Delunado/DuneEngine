@@ -48,17 +48,31 @@ private:
 
     void Render(SDL_Renderer *renderer, const std::unique_ptr<Camera> &camera,
                 const std::unique_ptr<AssetDatabase> &assetDatabase) const {
+        const float cameraScale = camera->GetOrthoScale();
+
         for (const auto &entity: _renderableEntities) {
             const auto transform = entity.transform;
             const auto sprite = entity.sprite;
 
-            const float zoomScale = camera->GetZoomScale();
+            glm::vec2 screenPos;
+
+            if (sprite.isFixed) {
+                screenPos = glm::vec2(transform.position.x, transform.position.y);
+            } else {
+                screenPos = camera->WorldToScreen(transform.position);
+            }
+
+            float spriteWorldWidth = sprite.width / static_cast<float>(sprite.PPU);
+            float spriteWorldHeight = sprite.height / static_cast<float>(sprite.PPU);
+
+            int screenWidth = static_cast<int>(spriteWorldWidth * transform.scale.x * cameraScale);
+            int screenHeight = static_cast<int>(spriteWorldHeight * transform.scale.y * cameraScale);
 
             SDL_Rect dstRect = {
-                static_cast<int>((transform.position.x - (sprite.isFixed ? 0 : camera->GetX())) * zoomScale),
-                static_cast<int>((transform.position.y - (sprite.isFixed ? 0 : camera->GetY())) * zoomScale),
-                static_cast<int>(sprite.width * transform.scale.x * zoomScale),
-                static_cast<int>(sprite.height * transform.scale.y * zoomScale)
+                static_cast<int>(screenPos.x - (screenWidth / 2.0f)),
+                static_cast<int>(screenPos.y - (screenHeight / 2.0f)),
+                screenWidth,
+                screenHeight
             };
 
             SDL_RenderCopyEx(renderer,

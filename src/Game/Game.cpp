@@ -21,12 +21,12 @@
 
 int Game::_windowWidth = 1920;
 int Game::_windowHeight = 1080;
-int Game::_mapWidth = 600;
-int Game::_mapHeight = 400;
+int Game::_mapWidth = 1920;
+int Game::_mapHeight = 1080;
 
 Game::Game(): _registry(std::make_unique<Registry>()), _assetDatabase(std::make_unique<AssetDatabase>()),
               _eventBus(std::make_unique<EventBus>()),
-              _camera(std::make_unique<Camera>(_windowWidth, _windowHeight, 16.0f, 12.0f)) {
+              _camera(std::make_unique<Camera>(_windowWidth, _windowHeight, 15.0f)) {
     Logger::Log("Game created");
     Logger::Log(std::filesystem::current_path().string());
 }
@@ -94,14 +94,14 @@ void Game::Setup() {
 }
 
 void Game::LoadLevel() const {
-    Tilemap tilemap = Tilemap();
+    Tilemap tilemap = Tilemap(16);
     tilemap.LoadFromLDtk(AssetDatabase::GetAssetPath("test.ldtk"));
 
     auto player = _registry->CreateEntity();
-    player.AddComponent<TransformComponent>(glm::vec2(300, 45));
-    player.AddComponent<RigidbodyComponent>(glm::vec2(0, 10));
+    player.AddComponent<TransformComponent>(glm::vec2(5, 10));
+    player.AddComponent<RigidbodyComponent>(glm::vec2(0, 2));
     player.AddComponent<BoxColliderComponent>(16, 16);
-    player.AddComponent<SpriteComponent>("Tilemap", 16, 16, 1, false, 0, 19 * 16);
+    player.AddComponent<SpriteComponent>("Tilemap", 16, 16, 1, false, 0, 19 * 16, 16);
     player.AddComponent<AnimationComponent>(2, 12, true);
     player.AddComponent<MovementByInputComponent>();
     player.AddComponent<CameraFollowComponent>();
@@ -109,14 +109,15 @@ void Game::LoadLevel() const {
     for (auto &tile: tilemap.GetTiles()) {
         auto tileEntity = _registry->CreateEntity();
         tileEntity.AddComponent<TransformComponent>(glm::vec2(tile.x, tile.y));
-        tileEntity.AddComponent<SpriteComponent>("Tilemap", 16, 16, 0, false, tile.tilesetCoordX, tile.tilesetCoordY);
+        tileEntity.AddComponent<SpriteComponent>("Tilemap", 16, 16, 0, false, tile.tilesetCoordX, tile.tilesetCoordY,
+                                                 16);
 
         if (tile.hasCollision)
-            tileEntity.AddComponent<BoxColliderComponent>(16, 16, glm::vec2(0, 4));
+            tileEntity.AddComponent<BoxColliderComponent>(16, 16, glm::vec2(0, 0.25f));
     }
 
-    _mapWidth = tilemap.GetWidth() * 16;
-    _mapHeight = tilemap.GetHeight() * 16;
+    _mapWidth = tilemap.GetWidth();
+    _mapHeight = tilemap.GetHeight();
 }
 
 void Game::Run() {

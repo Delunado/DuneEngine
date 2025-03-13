@@ -44,7 +44,6 @@ public:
                                                             glm::vec2(colliderB.width, colliderB.height));
 
                 if (collisionDetected) {
-                    Logger::Log("Collision detected!");
                     colliderA.isColliding = true;
                     colliderB.isColliding = true;
 
